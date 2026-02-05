@@ -1,9 +1,10 @@
-import { betterAuth } from 'better-auth'
-import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start";
 
-export const auth = betterAuth({
-  emailAndPassword: {
-    enabled: true,
-  },
-  plugins: [tanstackStartCookies()],
-})
+const convexUrl = import.meta.env.VITE_CONVEX_URL;
+const convexSiteUrl = import.meta.env.VITE_CONVEX_SITE_URL;
+
+export const { handler, getToken, fetchAuthQuery, fetchAuthMutation } =
+	convexBetterAuthReactStart({
+		convexUrl,
+		convexSiteUrl,
+	});

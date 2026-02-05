@@ -10,9 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShoppingRouteImport } from './routes/shopping'
+import { Route as RecipesRouteImport } from './routes/recipes'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RecipesIndexRouteImport } from './routes/recipes.index'
 import { Route as MealPlannerIndexRouteImport } from './routes/meal-planner/index'
+import { Route as RecipesNewRouteImport } from './routes/recipes.new'
 import { Route as MealPlannerLandingRouteImport } from './routes/meal-planner/landing'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -21,9 +26,24 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShoppingRoute = ShoppingRouteImport.update({
+  id: '/shopping',
+  path: '/shopping',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesRoute = RecipesRouteImport.update({
+  id: '/recipes',
+  path: '/recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,10 +51,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecipesIndexRoute = RecipesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RecipesRoute,
+} as any)
 const MealPlannerIndexRoute = MealPlannerIndexRouteImport.update({
   id: '/meal-planner/',
   path: '/meal-planner/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesNewRoute = RecipesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => RecipesRoute,
 } as any)
 const MealPlannerLandingRoute = MealPlannerLandingRouteImport.update({
   id: '/meal-planner/landing',
@@ -49,59 +79,90 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/recipes': typeof RecipesRouteWithChildren
+  '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
   '/meal-planner/landing': typeof MealPlannerLandingRoute
+  '/recipes/new': typeof RecipesNewRoute
   '/meal-planner/': typeof MealPlannerIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
   '/meal-planner/landing': typeof MealPlannerLandingRoute
+  '/recipes/new': typeof RecipesNewRoute
   '/meal-planner': typeof MealPlannerIndexRoute
+  '/recipes': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/recipes': typeof RecipesRouteWithChildren
+  '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
   '/meal-planner/landing': typeof MealPlannerLandingRoute
+  '/recipes/new': typeof RecipesNewRoute
   '/meal-planner/': typeof MealPlannerIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/login'
+    | '/recipes'
+    | '/shopping'
     | '/signup'
     | '/meal-planner/landing'
+    | '/recipes/new'
     | '/meal-planner/'
+    | '/recipes/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/login'
+    | '/shopping'
     | '/signup'
     | '/meal-planner/landing'
+    | '/recipes/new'
     | '/meal-planner'
+    | '/recipes'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/login'
+    | '/recipes'
+    | '/shopping'
     | '/signup'
     | '/meal-planner/landing'
+    | '/recipes/new'
     | '/meal-planner/'
+    | '/recipes/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   LoginRoute: typeof LoginRoute
+  RecipesRoute: typeof RecipesRouteWithChildren
+  ShoppingRoute: typeof ShoppingRoute
   SignupRoute: typeof SignupRoute
   MealPlannerLandingRoute: typeof MealPlannerLandingRoute
   MealPlannerIndexRoute: typeof MealPlannerIndexRoute
@@ -117,11 +178,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shopping': {
+      id: '/shopping'
+      path: '/shopping'
+      fullPath: '/shopping'
+      preLoaderRoute: typeof ShoppingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes': {
+      id: '/recipes'
+      path: '/recipes'
+      fullPath: '/recipes'
+      preLoaderRoute: typeof RecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -131,12 +213,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recipes/': {
+      id: '/recipes/'
+      path: '/'
+      fullPath: '/recipes/'
+      preLoaderRoute: typeof RecipesIndexRouteImport
+      parentRoute: typeof RecipesRoute
+    }
     '/meal-planner/': {
       id: '/meal-planner/'
       path: '/meal-planner'
       fullPath: '/meal-planner/'
       preLoaderRoute: typeof MealPlannerIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/recipes/new': {
+      id: '/recipes/new'
+      path: '/new'
+      fullPath: '/recipes/new'
+      preLoaderRoute: typeof RecipesNewRouteImport
+      parentRoute: typeof RecipesRoute
     }
     '/meal-planner/landing': {
       id: '/meal-planner/landing'
@@ -155,9 +251,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface RecipesRouteChildren {
+  RecipesNewRoute: typeof RecipesNewRoute
+  RecipesIndexRoute: typeof RecipesIndexRoute
+}
+
+const RecipesRouteChildren: RecipesRouteChildren = {
+  RecipesNewRoute: RecipesNewRoute,
+  RecipesIndexRoute: RecipesIndexRoute,
+}
+
+const RecipesRouteWithChildren =
+  RecipesRoute._addFileChildren(RecipesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   LoginRoute: LoginRoute,
+  RecipesRoute: RecipesRouteWithChildren,
+  ShoppingRoute: ShoppingRoute,
   SignupRoute: SignupRoute,
   MealPlannerLandingRoute: MealPlannerLandingRoute,
   MealPlannerIndexRoute: MealPlannerIndexRoute,

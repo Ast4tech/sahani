@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-02-04T00:00:00Z",
+  "libraries": {
+    "convex": {
+      "files": [
+        {
+          "filename": "convex-config-components.md",
+          "topic": "convex.config.ts and Components Configuration",
+          "fetched": "2025-02-04T00:00:00Z",
+          "source": "Context7 API + Official Docs"
+        },
+        {
+          "filename": "bundle-errors-troubleshooting.md",
+          "topic": "Bundle Errors and Troubleshooting",
+          "fetched": "2025-02-04T00:00:00Z",
+          "source": "Context7 API + Official Docs + Community Research"
+        }
+      ]
+    },
+    "convex-dev-better-auth": {
+      "files": [
+        {
+          "filename": "setup-configuration.md",
+          "topic": "Component Setup and Configuration",
+          "fetched": "2025-02-04T00:00:00Z",
+          "source": "Context7 API + Official Docs"
+        }
+      ]
+    }
+  }
+}

@@ -131,7 +131,7 @@ function MealMasterLandingPage() {
 								</span>
 							</div>
 							<span className="font-bold text-lg text-[#1A1A1A]">
-								MealMaster
+								sahani
 							</span>
 						</Link>
 
@@ -483,7 +483,7 @@ function MealMasterLandingPage() {
 									</span>
 								</div>
 								<span className="font-bold text-lg text-[#1A1A1A]">
-									MealMaster
+									sahani
 								</span>
 							</div>
 							<p className="text-sm text-[#4A5568] max-w-xs leading-relaxed">
@@ -555,7 +555,7 @@ function MealMasterLandingPage() {
 
 					<div className="border-t border-[#E2E8F0] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
 						<p className="text-xs text-[#A0AEC0]">
-							© 2024 MealMaster Inc. All rights reserved.
+							© 2024 sahani Inc. All rights reserved.
 						</p>
 						<div className="flex gap-4">
 							<button
