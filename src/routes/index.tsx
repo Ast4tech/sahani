@@ -1,112 +1,352 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { api } from "convex/_generated/api";
+import { useQuery } from "convex/react";
 import {
-	CheckCircle,
+	Activity,
+	ArrowRight,
+	ChefHat,
 	ChevronLeft,
 	ChevronRight,
+	Clock,
+	Droplets,
+	Flame,
+	LayoutDashboard,
 	PlayCircle,
+	Plus,
+	Search,
+	ShoppingCart,
+	Sparkles,
+	Star,
+	TrendingUp,
 } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/")({
-	component: MealMasterLandingPage,
+	component: RootPage,
 });
 
-const navLinks = [
-	{ label: "Features", href: "#features" },
-	{ label: "How it Works", href: "#how-it-works" },
-	{ label: "Recipes", href: "#recipes" },
-	{ label: "Pricing", href: "#pricing" },
-];
+function RootPage() {
+	const { data: session, isPending: sessionPending } = authClient.useSession();
 
-const steps = [
-	{
-		icon: "calendar_month",
-		number: "1",
-		title: "Plan",
-		description:
-			"Choose your diet and personal health goals with our AI-powered smart meal planner.",
-	},
-	{
-		icon: "shopping_cart",
-		number: "2",
-		title: "Shop",
-		description:
-			"Get an automated, sorted grocery list sent to your phone or delivered to your door.",
-	},
-	{
-		icon: "restaurant",
-		number: "3",
-		title: "Cook",
-		description:
-			"Follow simple, chef-tested recipes with step-by-step instructions and video guides.",
-	},
-];
+	if (sessionPending) {
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-white">
+				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#13EC5B]" />
+			</div>
+		);
+	}
 
-const recipes = [
-	{
-		name: "Zesty Lemon Salmon",
-		time: "25 mins",
-		calories: "450 kcal",
-		image: "salmon",
-		popular: true,
-		id: "recipe-1",
-	},
-	{
-		name: "Vegan Buddha Bowl",
-		time: "15 mins",
-		calories: "380 kcal",
-		image: "buddha",
-		popular: false,
-		id: "recipe-2",
-	},
-	{
-		name: "Mediterranean Quinoa",
-		time: "20 mins",
-		calories: "410 kcal",
-		image: "quinoa",
-		popular: false,
-		id: "recipe-3",
-	},
-	{
-		name: "Classic Avocado Toast",
-		time: "10 mins",
-		calories: "320 kcal",
-		image: "avocado",
-		popular: false,
-		id: "recipe-4",
-	},
-];
+	if (session?.user) {
+		return <Dashboard userName={session.user.name} email={session.user.email} />;
+	}
 
-const pricingPlans = [
-	{
-		name: "Basic",
-		price: "$0",
-		period: "forever",
-		description: "Perfect for individuals getting started with meal planning.",
-		features: [
-			{ name: "5 Weekly Recipes", included: true },
-			{ name: "Standard Grocery List", included: false },
-			{ name: "Community Access", included: false },
-		],
-		cta: "Get Started",
-		popular: false,
-	},
-	{
-		name: "Pro",
-		price: "$9.99",
-		period: "month",
-		description: "Everything you need to master your nutrition.",
-		features: [
-			{ name: "Unlimited Personalized Recipes", included: true },
-			{ name: "Automated Shopping Lists", included: true },
-			{ name: "Nutritional Tracking", included: true },
-			{ name: "Priority Support", included: true },
-		],
-		cta: "Go Pro Now",
-		popular: true,
-	},
-];
+	return <MealMasterLandingPage />;
+}
+
+// --- Dashboard Components ---
+
+function Dashboard({ userName, email }: { userName: string; email: string }) {
+	const todayStr = new Date().toISOString().split("T")[0];
+	const nutritionTargets = useQuery(api.nutritionTargets.get);
+	const dailyTotals = useQuery(api.nutritionTargets.calculateDailyTotals, {
+		date: todayStr,
+	});
+	const mealPlans = useQuery(api.mealPlans.listByDate, { date: todayStr });
+	const trendingRecipes = useQuery(api.recipes.list, {});
+	const shoppingLists = useQuery(api.shoppingLists.list);
+
+	const calorieTarget = nutritionTargets?.dailyCalories ?? 2000;
+	const caloriesConsumed = Math.round(dailyTotals?.calories ?? 0);
+	const caloriePercent = Math.min(100, Math.round((caloriesConsumed / calorieTarget) * 100));
+
+	const proteinTarget = nutritionTargets?.proteinGrams ?? 150;
+	const proteinConsumed = Math.round(dailyTotals?.protein ?? 0);
+	const proteinPercent = Math.min(100, Math.round((proteinConsumed / proteinTarget) * 100));
+
+	const carbsTarget = nutritionTargets?.carbsGrams ?? 250;
+	const carbsConsumed = Math.round(dailyTotals?.carbs ?? 0);
+	const fatTarget = nutritionTargets?.fatGrams ?? 65;
+	const fatConsumed = Math.round(dailyTotals?.fat ?? 0);
+
+	const currentList = shoppingLists?.[0];
+	const pendingShoppingItems = currentList?.items.filter(i => !i.checked).slice(0, 4) || [];
+
+	const nextMeal = useMemo(() => {
+		if (!mealPlans || mealPlans.length === 0) return null;
+		const hour = new Date().getHours();
+		let type: "breakfast" | "lunch" | "dinner" | "snack" = "breakfast";
+		if (hour >= 10 && hour < 14) type = "lunch";
+		else if (hour >= 14 && hour < 18) type = "snack";
+		else if (hour >= 18) type = "dinner";
+
+		const plan = mealPlans.find(p => p.mealType === type) || mealPlans[0];
+		return plan;
+	}, [mealPlans]);
+
+	// Fetch recipe details for nextMeal separately since we only have recipeId
+	const nextRecipe = useQuery(api.recipes.get, nextMeal ? { id: nextMeal.recipeId } : "skip" as any);
+
+	return (
+		<div className="flex min-h-screen bg-[#F8F9FA]">
+			<Sidebar userName={userName} activePath="/" />
+
+			<main className="flex-1 ml-64 p-8">
+				{/* Header */}
+				<div className="flex items-center justify-between mb-10">
+					<div>
+						<h1 className="text-3xl font-black text-[#1A1A1A] tracking-tight">
+							Good morning, {userName.split(" ")[0]}! 👋
+						</h1>
+						<p className="text-[#4A5568] font-medium mt-1">
+							Ready to crush your nutrition goals today?
+						</p>
+					</div>
+					<div className="flex items-center gap-3">
+						<Link to="/meal-planner">
+							<Button className="bg-white border border-[#E2E8F0] text-[#1A1A1A] hover:bg-[#F8F9FA] rounded-2xl px-6 h-12 font-bold shadow-sm">
+								View Planner
+							</Button>
+						</Link>
+						<Button className="bg-[#13EC5B] hover:bg-[#10B981] text-[#1A1A1A] rounded-2xl px-6 h-12 font-black shadow-lg shadow-[#13EC5B]/20 transition-all">
+							<Plus className="w-5 h-5 mr-2" />
+							Log Meal
+						</Button>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-12 gap-8">
+					{/* Left Column: Hero & Timeline */}
+					<div className="col-span-8 space-y-8">
+						{/* Hero: Today's Plate */}
+						<div className="bg-[#1A1A1A] rounded-[40px] p-10 text-white relative overflow-hidden shadow-2xl group">
+							<div className="absolute top-0 right-0 w-96 h-96 bg-[#13EC5B] rounded-full blur-[120px] opacity-20 -mr-40 -mt-40 transition-all group-hover:opacity-30" />
+							
+							<div className="relative z-10 flex gap-10 items-center">
+								<div className="flex-1">
+									<span className="text-[10px] font-black text-[#13EC5B] uppercase tracking-[0.2em] bg-[#13EC5B]/10 px-3 py-1.5 rounded-full mb-6 inline-block border border-[#13EC5B]/20">
+										Next up on your plate
+									</span>
+									{nextRecipe ? (
+										<>
+											<h2 className="text-4xl font-black mb-4 leading-tight">{nextRecipe.name}</h2>
+											<div className="flex items-center gap-6 mb-8 text-[#A0AEC0]">
+												<div className="flex items-center gap-2">
+													<Clock className="w-5 h-5 text-[#13EC5B]" />
+													<span className="font-bold text-sm">{(nextRecipe.prepTimeMinutes || 0) + (nextRecipe.cookTimeMinutes || 0)} mins</span>
+												</div>
+												<div className="flex items-center gap-2">
+													<Flame className="w-5 h-5 text-orange-500" />
+													<span className="font-bold text-sm">{nextRecipe.calories} kcal</span>
+												</div>
+											</div>
+											<Button className="bg-[#13EC5B] text-[#1A1A1A] font-black rounded-2xl h-14 px-10 hover:bg-[#10B981] shadow-xl shadow-[#13EC5B]/20">
+												View Recipe Details
+											</Button>
+										</>
+									) : (
+										<>
+											<h2 className="text-4xl font-black mb-4 leading-tight">No meal planned yet</h2>
+											<p className="text-[#A0AEC0] font-medium mb-8 max-w-sm">
+												You haven't assigned a recipe for your next meal. Let's find something healthy!
+											</p>
+											<Link to="/meal-planner">
+												<Button className="bg-[#13EC5B] text-[#1A1A1A] font-black rounded-2xl h-14 px-10 hover:bg-[#10B981] shadow-xl shadow-[#13EC5B]/20">
+													Choose a Meal
+												</Button>
+											</Link>
+										</>
+									)}
+								</div>
+								<div className="w-72 h-72 rounded-[32px] bg-white/5 border border-white/10 overflow-hidden relative shadow-2xl">
+									{nextRecipe?.imageUrl ? (
+										<img src={nextRecipe.imageUrl} alt={nextRecipe.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+									) : (
+										<div className="w-full h-full flex items-center justify-center opacity-20">
+											<ChefHat className="w-24 h-24 text-white" />
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+
+						{/* Timeline of Today */}
+						<div>
+							<h3 className="text-xl font-black text-[#1A1A1A] mb-6 flex items-center gap-2">
+								<Activity className="w-5 h-5 text-[#13EC5B]" />
+								Today's Timeline
+							</h3>
+							<div className="grid grid-cols-4 gap-4">
+								{["breakfast", "lunch", "dinner", "snack"].map((type) => {
+									const plan = mealPlans?.find(p => p.mealType === type);
+									return (
+										<div key={type} className="bg-white rounded-3xl p-5 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all group">
+											<p className="text-[10px] font-black text-[#A0AEC0] uppercase tracking-widest mb-3">{type}</p>
+											{plan ? (
+												<div className="space-y-3">
+													<div className="w-full h-24 rounded-2xl bg-[#F8F9FA] border border-[#E2E8F0] overflow-hidden">
+														<ChefHat className="w-8 h-8 text-[#A0AEC0] m-auto mt-8 opacity-20" />
+													</div>
+													<p className="text-sm font-black text-[#1A1A1A] line-clamp-1">Meal Logged</p>
+												</div>
+											) : (
+												<Link to="/meal-planner" className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-[#E2E8F0] rounded-2xl hover:border-[#13EC5B] hover:bg-[#13EC5B]/5 transition-all">
+													<Plus className="w-5 h-5 text-[#A0AEC0] group-hover:text-[#13EC5B]" />
+													<span className="text-[10px] font-black text-[#A0AEC0] mt-1 group-hover:text-[#13EC5B]">ADD</span>
+												</Link>
+											)}
+										</div>
+									);
+								})}
+							</div>
+						</div>
+
+						{/* Trending Recipes */}
+						<div>
+							<div className="flex items-center justify-between mb-6">
+								<h3 className="text-xl font-black text-[#1A1A1A] flex items-center gap-2">
+									<TrendingUp className="w-5 h-5 text-[#13EC5B]" />
+									New in the Kitchen
+								</h3>
+								<Link to="/recipes" className="text-xs font-black text-[#13EC5B] hover:underline uppercase tracking-wider">
+									Explore All
+								</Link>
+							</div>
+							<div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+								{trendingRecipes?.slice(0, 6).map((recipe) => (
+									<div key={recipe._id} className="min-w-[240px] bg-white rounded-3xl border border-[#E2E8F0] shadow-sm overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+										<div className="h-40 overflow-hidden relative">
+											{recipe.imageUrl ? (
+												<img src={recipe.imageUrl} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+											) : (
+												<div className="w-full h-full bg-[#F8F9FA] flex items-center justify-center">
+													<ChefHat className="w-10 h-10 text-[#A0AEC0]" />
+												</div>
+											)}
+											<div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg">
+												<div className="flex items-center gap-1">
+													<Star className="w-3 h-3 fill-[#13EC5B] text-[#13EC5B]" />
+													<span className="text-[10px] font-black text-[#1A1A1A]">4.9</span>
+												</div>
+											</div>
+										</div>
+										<div className="p-5">
+											<h4 className="font-black text-sm text-[#1A1A1A] mb-2 line-clamp-1">{recipe.name}</h4>
+											<div className="flex items-center justify-between">
+												<span className="text-[10px] font-bold text-[#A0AEC0] uppercase tracking-wider">{recipe.calories} kcal</span>
+												<div className="w-6 h-6 rounded-full bg-[#13EC5B]/10 flex items-center justify-center text-[#13EC5B]">
+													<ArrowRight className="w-3 h-3" />
+												</div>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+
+					{/* Right Column: Nutrition Rings & Shopping */}
+					<div className="col-span-4 space-y-8">
+						{/* Nutrition Stats */}
+						<div className="bg-white rounded-[40px] p-8 border border-[#E2E8F0] shadow-sm">
+							<h3 className="text-xl font-black text-[#1A1A1A] mb-8">Live Nutrition</h3>
+							
+							<div className="flex flex-col items-center mb-10 relative">
+								{/* Simplified Progress Circle */}
+								<div className="w-48 h-48 rounded-full border-[16px] border-[#F8F9FA] flex flex-col items-center justify-center relative overflow-hidden">
+									{/* Actual Progress Overlay (Visual Representation) */}
+									<div 
+										className="absolute inset-0 border-[16px] border-[#13EC5B] rounded-full transition-all duration-1000"
+										style={{ 
+											clipPath: `polygon(50% 50%, 50% 0%, ${caloriePercent > 50 ? '100%' : '50%'} 0%, ${caloriePercent > 25 ? '100%' : '50%'} ${caloriePercent > 25 ? '100%' : '0%'}, ${caloriePercent > 75 ? '0%' : '100%'} 100%, 0% ${caloriePercent > 75 ? '0%' : '100%'}, 0% 0%, 50% 0%)` 
+										}}
+									/>
+									<p className="text-[10px] font-black text-[#A0AEC0] uppercase tracking-[0.2em] mb-1 relative z-10">Calories</p>
+									<p className="text-4xl font-black text-[#1A1A1A] relative z-10">{caloriesConsumed}</p>
+									<p className="text-xs font-bold text-[#A0AEC0] relative z-10">of {calorieTarget}</p>
+								</div>
+							</div>
+
+							<div className="space-y-6">
+								<div>
+									<div className="flex justify-between items-end mb-2">
+										<p className="text-xs font-black text-[#1A1A1A] uppercase tracking-wider">Protein</p>
+										<p className="text-sm font-black text-[#13EC5B]">{proteinConsumed}g / {proteinTarget}g</p>
+									</div>
+									<div className="h-2 bg-[#F8F9FA] rounded-full overflow-hidden">
+										<div className="h-full bg-blue-500 rounded-full transition-all duration-700" style={{ width: `${proteinPercent}%` }} />
+									</div>
+								</div>
+								<div>
+									<div className="flex justify-between items-end mb-2">
+										<p className="text-xs font-black text-[#1A1A1A] uppercase tracking-wider">Carbs</p>
+										<p className="text-sm font-black text-[#13EC5B]">{carbsConsumed}g / {carbsTarget}g</p>
+									</div>
+									<div className="h-2 bg-[#F8F9FA] rounded-full overflow-hidden">
+										<div className="h-full bg-amber-500 rounded-full transition-all duration-700" style={{ width: `${Math.min(100, (carbsConsumed / carbsTarget) * 100)}%` }} />
+									</div>
+								</div>
+								<div>
+									<div className="flex justify-between items-end mb-2">
+										<p className="text-xs font-black text-[#1A1A1A] uppercase tracking-wider">Hydration</p>
+										<p className="text-sm font-black text-[#13EC5B]">1.2L / 2.5L</p>
+									</div>
+									<div className="h-2 bg-[#F8F9FA] rounded-full overflow-hidden">
+										<div className="h-full bg-cyan-400 rounded-full transition-all duration-700" style={{ width: '48%' }} />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Shopping List Shortcut */}
+						<div className="bg-[#13EC5B]/5 border border-[#13EC5B]/10 rounded-[40px] p-8">
+							<div className="flex items-center justify-between mb-6">
+								<h3 className="font-black text-[#1A1A1A] flex items-center gap-2">
+									<ShoppingCart className="w-5 h-5 text-[#13EC5B]" />
+									Grocery List
+								</h3>
+								<Link to="/shopping" className="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-[#13EC5B] shadow-sm hover:scale-110 transition-transform">
+									<ArrowRight className="w-4 h-4" />
+								</Link>
+							</div>
+
+							<div className="space-y-3">
+								{pendingShoppingItems.length > 0 ? (
+									pendingShoppingItems.map((item, idx) => (
+										<div key={idx} className="bg-white p-4 rounded-2xl flex items-center gap-3 shadow-sm">
+											<div className="w-5 h-5 rounded-full border-2 border-[#13EC5B]/30" />
+											<p className="text-sm font-bold text-[#4A5568]">{item.name}</p>
+										</div>
+									))
+								) : (
+									<div className="text-center py-6">
+										<p className="text-xs font-bold text-[#A0AEC0]">Your list is empty.</p>
+									</div>
+								)}
+							</div>
+						</div>
+
+						{/* AI Insight Card */}
+						<div className="bg-[#1A1A1A] rounded-[40px] p-8 text-white relative overflow-hidden">
+							<Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-[#13EC5B] opacity-10 rotate-12" />
+							<h4 className="font-black flex items-center gap-2 mb-4">
+								<Sparkles className="w-4 h-4 text-[#13EC5B]" />
+								Daily Tip
+							</h4>
+							<p className="text-xs text-[#A0AEC0] leading-relaxed font-medium">
+								"Adding a source of vitamin C (like lemon) to your spinach helps your body absorb the iron more efficiently."
+							</p>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	);
+}
+
+// --- Landing Page Component (Current index.tsx content) ---
 
 function MealMasterLandingPage() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -136,7 +376,12 @@ function MealMasterLandingPage() {
 						</Link>
 
 						<div className="hidden md:flex items-center gap-8">
-							{navLinks.map((link) => (
+							{[
+								{ label: "Features", href: "#features" },
+								{ label: "How it Works", href: "#how-it-works" },
+								{ label: "Recipes", href: "#recipes" },
+								{ label: "Pricing", href: "#pricing" },
+							].map((link) => (
 								<a
 									key={link.label}
 									href={link.href}
@@ -176,7 +421,12 @@ function MealMasterLandingPage() {
 				{mobileMenuOpen && (
 					<div className="md:hidden bg-white border-t border-[#E2E8F0]">
 						<div className="px-4 py-4 space-y-3">
-							{navLinks.map((link) => (
+							{[
+								{ label: "Features", href: "#features" },
+								{ label: "How it Works", href: "#how-it-works" },
+								{ label: "Recipes", href: "#recipes" },
+								{ label: "Pricing", href: "#pricing" },
+							].map((link) => (
 								<a
 									key={link.label}
 									href={link.href}
@@ -293,7 +543,29 @@ function MealMasterLandingPage() {
 					</div>
 
 					<div className="grid md:grid-cols-3 gap-6">
-						{steps.map((step) => (
+						{[
+							{
+								icon: "calendar_month",
+								number: "1",
+								title: "Plan",
+								description:
+									"Choose your diet and personal health goals with our AI-powered smart meal planner.",
+							},
+							{
+								icon: "shopping_cart",
+								number: "2",
+								title: "Shop",
+								description:
+									"Get an automated, sorted grocery list sent to your phone or delivered to your door.",
+							},
+							{
+								icon: "restaurant",
+								number: "3",
+								title: "Cook",
+								description:
+									"Follow simple, chef-tested recipes with step-by-step instructions and video guides.",
+							},
+						].map((step) => (
 							<div
 								key={step.number}
 								className="bg-[#F8F9FA] rounded-xl p-6 text-left"
@@ -309,163 +581,6 @@ function MealMasterLandingPage() {
 								<p className="text-sm text-[#4A5568] leading-relaxed">
 									{step.description}
 								</p>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<section
-				id={recipesId}
-				className="py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#F8F9FA]"
-			>
-				<div className="max-w-7xl mx-auto">
-					<div className="flex items-center justify-between mb-8">
-						<div>
-							<h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">
-								Community Favorites
-							</h2>
-							<p className="text-sm text-[#4A5568]">
-								The most cooked recipes this week by our members.
-							</p>
-						</div>
-						<div className="hidden sm:flex gap-2">
-							<button
-								type="button"
-								className="w-10 h-10 rounded-full bg-white border border-[#E2E8F0] flex items-center justify-center hover:bg-[#F8F9FA]"
-							>
-								<ChevronLeft className="w-5 h-5 text-[#4A5568]" />
-							</button>
-							<button
-								type="button"
-								className="w-10 h-10 rounded-full bg-white border border-[#E2E8F0] flex items-center justify-center hover:bg-[#F8F9FA]"
-							>
-								<ChevronRight className="w-5 h-5 text-[#4A5568]" />
-							</button>
-						</div>
-					</div>
-
-					<div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-						{recipes.map((recipe) => (
-							<div
-								key={recipe.id}
-								className="bg-white rounded-xl overflow-hidden"
-							>
-								<div className="relative h-48">
-									<img
-										src={
-											recipe.image === "salmon"
-												? "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop"
-												: recipe.image === "buddha"
-													? "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
-													: recipe.image === "quinoa"
-														? "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=400&h=300&fit=crop"
-														: "https://images.unsplash.com/photo-1588137372308-15f75323ca8d?w=400&h=300&fit=crop"
-										}
-										alt={recipe.name}
-										className="w-full h-full object-cover"
-									/>
-									{recipe.popular && (
-										<span className="absolute top-3 left-3 bg-white/90 text-[#1A1A1A] text-xs font-semibold px-2 py-1 rounded">
-											POPULAR
-										</span>
-									)}
-								</div>
-								<div className="p-4">
-									<h3 className="font-semibold text-[#1A1A1A] mb-2 text-sm">
-										{recipe.name}
-									</h3>
-									<div className="flex items-center gap-2 text-xs text-[#A0AEC0]">
-										<span className="material-icons text-xs">schedule</span>
-										<span>{recipe.time}</span>
-										<span className="mx-1">•</span>
-										<span className="material-icons text-xs">bolt</span>
-										<span>{recipe.calories}</span>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<section
-				id={pricingId}
-				className="py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-white"
-			>
-				<div className="max-w-4xl mx-auto">
-					<div className="text-center mb-12">
-						<h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-3">
-							Simple, honest pricing
-						</h2>
-						<p className="text-base text-[#4A5568]">
-							Join over 10,000 members making healthy eating effortless.
-						</p>
-						<p className="text-sm text-[#A0AEC0] mt-1">
-							Choose your plan. Change anytime.
-						</p>
-					</div>
-
-					<div className="grid md:grid-cols-2 gap-6">
-						{pricingPlans.map((plan) => (
-							<div
-								key={plan.name}
-								className={`rounded-xl p-6 border ${
-									plan.popular
-										? "border-[#13EC5B] bg-white"
-										: "border-[#E2E8F0] bg-white"
-								}`}
-							>
-								{plan.popular && (
-									<span className="inline-block bg-[#13EC5B] text-white text-xs font-semibold px-3 py-1 rounded mb-4">
-										MOST POPULAR
-									</span>
-								)}
-								<h3 className="text-lg font-semibold text-[#1A1A1A] mb-1">
-									{plan.name}
-								</h3>
-								<div className="mb-4">
-									<span className="text-3xl font-bold text-[#1A1A1A]">
-										{plan.price}
-									</span>
-									<span className="text-sm text-[#A0AEC0]">
-										/ {plan.period}
-									</span>
-								</div>
-								<p className="text-sm text-[#4A5568] mb-6">
-									{plan.description}
-								</p>
-
-								<ul className="space-y-3 mb-6">
-									{plan.features.map((feature) => (
-										<li key={feature.name} className="flex items-center gap-3">
-											<CheckCircle
-												className={`w-5 h-5 flex-shrink-0 ${
-													feature.included ? "text-[#13EC5B]" : "text-[#A0AEC0]"
-												}`}
-											/>
-											<span
-												className={`text-sm ${
-													feature.included ? "text-[#1A1A1A]" : "text-[#A0AEC0]"
-												}`}
-											>
-												{feature.name}
-											</span>
-										</li>
-									))}
-								</ul>
-
-								<Link to="/signup" className="block">
-									<Button
-										className={`w-full rounded-lg py-3 font-semibold ${
-											plan.popular
-												? "bg-[#13EC5B] text-white hover:bg-[#10B981]"
-												: "bg-white border border-[#13EC5B] text-[#13EC5B] hover:bg-[#F8F9FA]"
-										}`}
-									>
-										{plan.cta}
-									</Button>
-								</Link>
 							</div>
 						))}
 					</div>
@@ -557,41 +672,9 @@ function MealMasterLandingPage() {
 						<p className="text-xs text-[#A0AEC0]">
 							© 2024 sahani Inc. All rights reserved.
 						</p>
-						<div className="flex gap-4">
-							<button
-								type="button"
-								className="text-[#A0AEC0] hover:text-[#13EC5B] transition-colors"
-								aria-label="Follow us on X (Twitter)"
-							>
-								<svg
-									className="w-5 h-5"
-									fill="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<title>X (Twitter)</title>
-									<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-								</svg>
-							</button>
-							<button
-								type="button"
-								className="text-[#A0AEC0] hover:text-[#13EC5B] transition-colors"
-								aria-label="Follow us on Instagram"
-							>
-								<svg
-									className="w-5 h-5"
-									fill="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<title>Instagram</title>
-									<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-								</svg>
-							</button>
-						</div>
 					</div>
 				</div>
 			</footer>
 		</div>
 	);
 }
-
-export default MealMasterLandingPage;

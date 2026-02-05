@@ -73,7 +73,7 @@ export const create = mutation({
     if (!user) throw new Error('Unauthorized')
 
     const recipe = await ctx.db.get(args.recipeId)
-    if (!recipe || recipe.userId !== user._id) {
+    if (!recipe || (recipe.userId !== undefined && recipe.userId !== user._id)) {
       throw new Error('Recipe not found')
     }
 
@@ -118,7 +118,7 @@ export const update = mutation({
 
     if (args.recipeId) {
       const recipe = await ctx.db.get(args.recipeId)
-      if (!recipe || recipe.userId !== user._id) {
+      if (!recipe || (recipe.userId !== undefined && recipe.userId !== user._id)) {
         throw new Error('Recipe not found')
       }
     }
