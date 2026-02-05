@@ -11,6 +11,7 @@
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as mealPlans from "../mealPlans.js";
+import type * as nutritionAnalytics from "../nutritionAnalytics.js";
 import type * as nutritionTargets from "../nutritionTargets.js";
 import type * as recipes from "../recipes.js";
 import type * as seed from "../seed.js";
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
   mealPlans: typeof mealPlans;
+  nutritionAnalytics: typeof nutritionAnalytics;
   nutritionTargets: typeof nutritionTargets;
   recipes: typeof recipes;
   seed: typeof seed;

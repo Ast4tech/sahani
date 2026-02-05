@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ShoppingRouteImport } from './routes/shopping'
 import { Route as RecipesRouteImport } from './routes/recipes'
+import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
@@ -34,6 +35,11 @@ const ShoppingRoute = ShoppingRouteImport.update({
 const RecipesRoute = RecipesRouteImport.update({
   id: '/recipes',
   path: '/recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NutritionRoute = NutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/nutrition': typeof NutritionRoute
   '/recipes': typeof RecipesRouteWithChildren
   '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/nutrition': typeof NutritionRoute
   '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
   '/meal-planner/landing': typeof MealPlannerLandingRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/nutrition': typeof NutritionRoute
   '/recipes': typeof RecipesRouteWithChildren
   '/shopping': typeof ShoppingRoute
   '/signup': typeof SignupRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/nutrition'
     | '/recipes'
     | '/shopping'
     | '/signup'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/nutrition'
     | '/shopping'
     | '/signup'
     | '/meal-planner/landing'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/nutrition'
     | '/recipes'
     | '/shopping'
     | '/signup'
@@ -161,6 +173,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   LoginRoute: typeof LoginRoute
+  NutritionRoute: typeof NutritionRoute
   RecipesRoute: typeof RecipesRouteWithChildren
   ShoppingRoute: typeof ShoppingRoute
   SignupRoute: typeof SignupRoute
@@ -190,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: '/recipes'
       fullPath: '/recipes'
       preLoaderRoute: typeof RecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nutrition': {
+      id: '/nutrition'
+      path: '/nutrition'
+      fullPath: '/nutrition'
+      preLoaderRoute: typeof NutritionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -268,6 +288,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   LoginRoute: LoginRoute,
+  NutritionRoute: NutritionRoute,
   RecipesRoute: RecipesRouteWithChildren,
   ShoppingRoute: ShoppingRoute,
   SignupRoute: SignupRoute,
