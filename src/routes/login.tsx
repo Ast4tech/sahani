@@ -62,7 +62,7 @@ function LoginPage() {
 			if (signInError) {
 				setError(signInError.message || "Invalid email or password");
 			} else {
-				navigate({ to: "/meal-planner" });
+			navigate({ to: "/" });
 			}
 		} catch (err) {
 			setError("An unexpected error occurred. Please try again.");
@@ -76,7 +76,7 @@ function LoginPage() {
 		try {
 			await authClient.signIn.social({
 				provider: "google",
-				callbackURL: "/meal-planner",
+				callbackURL: "/",
 			});
 		} catch (err) {
 			setError("Failed to sign in with Google");

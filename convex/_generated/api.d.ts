@@ -17,6 +17,7 @@ import type * as recipes from "../recipes.js";
 import type * as seed from "../seed.js";
 import type * as shoppingLists from "../shoppingLists.js";
 import type * as todos from "../todos.js";
+import type * as userProfile from "../userProfile.js";
 
 import type {
   ApiFromModules,
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   shoppingLists: typeof shoppingLists;
   todos: typeof todos;
+  userProfile: typeof userProfile;
 }>;
 
 /**

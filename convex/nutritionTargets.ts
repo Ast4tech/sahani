@@ -47,6 +47,46 @@ export const upsert = mutation({
   },
 })
 
+const GOAL_TARGETS = {
+  eat_healthy: { dailyCalories: 2000, proteinGrams: 150, carbsGrams: 250, fatGrams: 65 },
+  lose_weight: { dailyCalories: 1600, proteinGrams: 140, carbsGrams: 180, fatGrams: 55 },
+  build_muscle: { dailyCalories: 2400, proteinGrams: 190, carbsGrams: 280, fatGrams: 75 },
+} as const
+
+export const seedFromGoal = mutation({
+  args: {
+    healthGoal: v.union(
+      v.literal('eat_healthy'),
+      v.literal('lose_weight'),
+      v.literal('build_muscle'),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) throw new Error('Unauthorized')
+
+    const targets = GOAL_TARGETS[args.healthGoal]
+
+    const existing = await ctx.db
+      .query('nutritionTargets')
+      .withIndex('by_user', (q) => q.eq('userId', user._id))
+      .first()
+
+    if (existing) {
+      return await ctx.db.patch(existing._id, {
+        ...targets,
+        updatedAt: Date.now(),
+      })
+    }
+
+    return await ctx.db.insert('nutritionTargets', {
+      userId: user._id,
+      ...targets,
+      updatedAt: Date.now(),
+    })
+  },
+})
+
 export const calculateDailyTotals = query({
   args: { date: v.string() },
   handler: async (ctx, args) => {

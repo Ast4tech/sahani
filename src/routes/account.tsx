@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { api } from "convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import {
-	Bell,
 	Camera,
 	ChevronRight,
 	CreditCard,
@@ -26,6 +25,25 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { authClient } from "@/lib/auth-client";
 
+type HealthGoal = "eat_healthy" | "lose_weight" | "build_muscle";
+
+const DIET_OPTIONS: { id: HealthGoal; label: string; desc: string }[] = [
+	{ id: "eat_healthy", label: "Eat Healthier", desc: "Balanced, nutritious habits" },
+	{ id: "lose_weight", label: "Lose Weight", desc: "Calorie-smart meals" },
+	{ id: "build_muscle", label: "Build Muscle", desc: "High-protein plans" },
+];
+
+const FOOD_EXCLUSIONS: { id: string; label: string }[] = [
+	{ id: "gluten", label: "Gluten" },
+	{ id: "dairy", label: "Dairy" },
+	{ id: "nuts", label: "Nuts" },
+	{ id: "meat", label: "Meat" },
+	{ id: "shellfish", label: "Shellfish" },
+	{ id: "eggs", label: "Eggs" },
+	{ id: "soy", label: "Soy" },
+	{ id: "fish", label: "Fish" },
+];
+
 export const Route = createFileRoute("/account" as any)({
 	component: AccountPage,
 });
@@ -37,6 +55,13 @@ function AccountPage() {
 
 	const nutritionTargets = useQuery(api.nutritionTargets.get);
 	const upsertNutritionTargets = useMutation(api.nutritionTargets.upsert);
+
+	// User profile (dietary preferences)
+	const userProfile = useQuery(api.userProfile.get);
+	const upsertUserProfile = useMutation(api.userProfile.upsert);
+	const [selectedGoal, setSelectedGoal] = useState<HealthGoal>("eat_healthy");
+	const [selectedFoods, setSelectedFoods] = useState<Set<string>>(new Set());
+	const [isSavingDiet, setIsSavingDiet] = useState(false);
 
 	const [calories, setCalories] = useState(2000);
 	const [protein, setProtein] = useState(150);
@@ -51,6 +76,28 @@ function AccountPage() {
 			setFat(nutritionTargets.fatGrams || 65);
 		}
 	}, [nutritionTargets]);
+
+	useEffect(() => {
+		if (userProfile) {
+			setSelectedGoal(userProfile.healthGoal as HealthGoal);
+			setSelectedFoods(new Set(userProfile.foodsToAvoid));
+		}
+	}, [userProfile]);
+
+	const handleSaveDiet = async () => {
+		setIsSavingDiet(true);
+		try {
+			await upsertUserProfile({
+				healthGoal: selectedGoal,
+				foodsToAvoid: Array.from(selectedFoods),
+				onboardingCompleted: true,
+			});
+		} catch (error) {
+			console.error("Failed to update dietary preferences:", error);
+		} finally {
+			setIsSavingDiet(false);
+		}
+	};
 
 	const handleSaveNutrition = async () => {
 		try {
@@ -267,41 +314,82 @@ function AccountPage() {
 										<p className="text-xs text-muted-foreground mt-1 font-medium">Customise your sahani experience.</p>
 									</div>
 									<div className="p-8 space-y-8">
-										<div className="grid grid-cols-2 gap-8">
-											<div className="space-y-6">
-												<h3 className="text-sm font-black text-foreground uppercase tracking-wider">Primary Diet</h3>
-												<div className="space-y-3">
-													{["Vegan", "Vegetarian", "Pescatarian", "Keto", "Paleo", "No Preference"].map((diet) => (
-														<label key={diet} className="flex items-center justify-between p-4 bg-secondary rounded-2xl border border-border cursor-pointer hover:border-primary transition-all group">
-															<span className="font-bold text-foreground">{diet}</span>
-															<div className={`w-5 h-5 rounded-full border-2 ${diet === "No Preference" ? "border-primary bg-primary" : "border-border group-hover:border-primary"}`}>
-																{diet === "No Preference" && <div className="w-full h-full flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-card" /></div>}
+										{/* Health Goal */}
+										<div className="space-y-4">
+											<h3 className="text-sm font-black text-foreground uppercase tracking-wider">Health Goal</h3>
+											<div className="space-y-3">
+												{DIET_OPTIONS.map((option) => {
+													const isSelected = selectedGoal === option.id;
+													return (
+														<button
+															key={option.id}
+															type="button"
+															onClick={() => setSelectedGoal(option.id)}
+															className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+																isSelected
+																	? "border-primary bg-primary/5"
+																	: "border-border bg-secondary hover:border-primary/50"
+															}`}
+														>
+															<div className="text-left">
+																<span className="font-bold text-foreground block">{option.label}</span>
+																<span className="text-xs text-muted-foreground">{option.desc}</span>
 															</div>
-														</label>
-													))}
-												</div>
+															<div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${isSelected ? "border-primary bg-primary" : "border-border"}`}>
+																{isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+															</div>
+														</button>
+													);
+												})}
 											</div>
-											<div className="space-y-6">
-												<h3 className="text-sm font-black text-foreground uppercase tracking-wider">Health Goals</h3>
-												<div className="space-y-4">
-													{[
-														{ label: "Weight Loss", desc: "Focus on calorie deficit meals" },
-														{ label: "Muscle Gain", desc: "Higher protein targets" },
-														{ label: "Maintenance", desc: "Balanced nutritional intake" },
-														{ label: "Heart Healthy", desc: "Low sodium and healthy fats" },
-													].map((goal) => (
-														<div key={goal.label} className="p-4 bg-card rounded-2xl border border-border flex items-start gap-4 hover:shadow-md transition-all cursor-pointer group">
-															<div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-																<Heart className="w-5 h-5" />
-															</div>
-															<div>
-																<p className="font-bold text-foreground">{goal.label}</p>
-																<p className="text-xs text-muted-foreground font-medium">{goal.desc}</p>
-															</div>
-														</div>
-													))}
-												</div>
+										</div>
+
+										{/* Foods to Avoid */}
+										<div className="space-y-4">
+											<h3 className="text-sm font-black text-foreground uppercase tracking-wider">Foods to Avoid</h3>
+											<div className="flex flex-wrap gap-3">
+												{FOOD_EXCLUSIONS.map(({ id, label }) => {
+													const isSelected = selectedFoods.has(id);
+													return (
+														<button
+															key={id}
+															type="button"
+															onClick={() => {
+																setSelectedFoods((prev) => {
+																	const next = new Set(prev);
+																	if (next.has(id)) next.delete(id);
+																	else next.add(id);
+																	return next;
+																});
+															}}
+															className={`px-4 py-2 rounded-full border-2 text-sm font-bold transition-all ${
+																isSelected
+																	? "border-primary bg-primary/10 text-primary"
+																	: "border-border bg-secondary text-foreground hover:border-primary/50"
+															}`}
+														>
+															{label}
+														</button>
+													);
+												})}
 											</div>
+										</div>
+
+										<div className="pt-2 flex justify-end">
+											<Button
+												onClick={handleSaveDiet}
+												disabled={isSavingDiet}
+												className="bg-primary hover:bg-sahani-green-hover text-foreground font-black px-8 h-12 rounded-xl shadow-lg shadow-primary/20 transition-all"
+											>
+												{isSavingDiet ? (
+													<span className="flex items-center gap-2">
+														<Loader2 className="w-4 h-4 animate-spin" />
+														Saving...
+													</span>
+												) : (
+													"Save Preferences"
+												)}
+											</Button>
 										</div>
 									</div>
 								</div>

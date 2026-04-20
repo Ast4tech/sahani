@@ -65,6 +65,18 @@ export default defineSchema({
   })
     .index('by_user', ['userId']),
 
+  userProfile: defineTable({
+    userId: v.string(),
+    healthGoal: v.union(
+      v.literal('eat_healthy'),
+      v.literal('lose_weight'),
+      v.literal('build_muscle'),
+    ),
+    foodsToAvoid: v.array(v.string()),
+    onboardingCompleted: v.boolean(),
+    createdAt: v.number(),
+  }).index('by_user', ['userId']),
+
   shoppingLists: defineTable({
     userId: v.string(),
     name: v.string(),

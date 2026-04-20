@@ -89,7 +89,7 @@ function SignupPage() {
 			if (signUpError) {
 				setError(signUpError.message || "Failed to create account");
 			} else {
-				navigate({ to: "/meal-planner" });
+				navigate({ to: "/onboarding" });
 			}
 		} catch (err) {
 			setError("An unexpected error occurred. Please try again.");
@@ -103,7 +103,7 @@ function SignupPage() {
 		try {
 			await authClient.signIn.social({
 				provider: "google",
-				callbackURL: "/meal-planner",
+				callbackURL: "/",
 			});
 		} catch (err) {
 			setError("Failed to sign up with Google");
