@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Star } from "lucide-react";
+import { useState } from "react";
 
 interface ReviewFormProps {
   initialRating?: number;

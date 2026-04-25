@@ -1,7 +1,16 @@
 import { useState } from "react";
 import type { Doc } from "convex/_generated/dataModel";
 import { useQuery, useMutation } from "convex/react";
-import { ChefHat, Clock, Minus, Plus, Star, Utensils, Trash2, Edit2 } from "lucide-react";
+import {
+  ChefHat,
+  Clock,
+  Minus,
+  Plus,
+  Star,
+  Utensils,
+  Trash2,
+  Edit2,
+} from "lucide-react";
 import { scaleAmount } from "@/lib/recipe-utils";
 import { Button } from "@/components/ui/button";
 import { ReviewForm } from "./ReviewForm";
@@ -18,15 +27,15 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
   // Fetch reviews and stats from Convex
   const reviews = useQuery(
     api.recipeReviews.list,
-    recipe?._id ? { recipeId: recipe._id } : "skip"
+    recipe?._id ? { recipeId: recipe._id } : "skip",
   );
   const stats = useQuery(
     api.recipeReviews.getStats,
-    recipe?._id ? { recipeId: recipe._id } : "skip"
+    recipe?._id ? { recipeId: recipe._id } : "skip",
   );
   const userReview = useQuery(
     api.recipeReviews.getUserReview,
-    recipe?._id ? { recipeId: recipe._id } : "skip"
+    recipe?._id ? { recipeId: recipe._id } : "skip",
   );
 
   // Mutations
@@ -122,9 +131,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
               Prep
             </p>
             <p className="text-lg font-black text-foreground">
-              {(recipe.prepTimeMinutes || 0) +
-                (recipe.cookTimeMinutes || 0)}
-              M
+              {(recipe.prepTimeMinutes || 0) + (recipe.cookTimeMinutes || 0)}M
             </p>
           </div>
           <div className="bg-secondary border border-border rounded-2xl p-4 text-center">
@@ -134,9 +141,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
             <p className="text-[10px] font-bold text-sahani-tertiary uppercase tracking-wider">
               Carbs
             </p>
-            <p className="text-lg font-black text-foreground">
-              {scaledCarbs}
-            </p>
+            <p className="text-lg font-black text-foreground">{scaledCarbs}</p>
           </div>
           <div className="bg-secondary border border-border rounded-2xl p-4 text-center">
             <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -145,9 +150,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
             <p className="text-[10px] font-bold text-sahani-tertiary uppercase tracking-wider">
               Fat
             </p>
-            <p className="text-lg font-black text-foreground">
-              {scaledFat}
-            </p>
+            <p className="text-lg font-black text-foreground">{scaledFat}</p>
           </div>
         </div>
 
@@ -324,9 +327,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
 
         <div className="mb-10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-black text-foreground">
-              Ingredients
-            </h3>
+            <h3 className="text-xl font-black text-foreground">Ingredients</h3>
             <div className="flex items-center bg-secondary rounded-lg border border-border p-1">
               <button
                 type="button"
@@ -379,9 +380,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Calories
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {scaledCalories}
-              </p>
+              <p className="font-black text-foreground">{scaledCalories}</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -392,9 +391,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Protein
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {scaledProtein}g
-              </p>
+              <p className="font-black text-foreground">{scaledProtein}g</p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -405,9 +402,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Total Fat
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {scaledFat}g
-              </p>
+              <p className="font-black text-foreground">{scaledFat}g</p>
             </div>
           </div>
         </div>
