@@ -1,0 +1,741 @@
+{
+  "communities": {
+    "0": [
+      "adopt_shadcn_components_change",
+      "app_sidebar_capability",
+      "app_sidebar_component",
+      "design_tokens_capability",
+      "insight_card_component",
+      "macro_bar_component",
+      "meal_slot_component",
+      "nutrition_ring_component",
+      "page_layout_component",
+      "recipe_card_component",
+      "sahani_card_component",
+      "sahani_wrappers_capability",
+      "stat_card_component"
+    ],
+    "1": [
+      "auth_createauth",
+      "convex_auth_ts",
+      "convex_generated_api_d_ts",
+      "convex_http_ts",
+      "convex_mealplans_ts",
+      "convex_nutritionanalytics_ts",
+      "convex_nutritiontargets_ts",
+      "convex_recipes_ts",
+      "convex_seed_ts",
+      "convex_shoppinglists_ts",
+      "convex_todos_ts",
+      "convex_userprofile_ts"
+    ],
+    "2": [
+      "select_select",
+      "select_selectgroup",
+      "select_selectitem",
+      "select_selectlabel",
+      "select_selectscrolldownbutton",
+      "select_selectscrollupbutton",
+      "select_selectseparator",
+      "select_selecttrigger",
+      "select_selectvalue",
+      "src_components_ui_select_tsx"
+    ],
+    "3": [
+      "busara_recipe",
+      "common_snacks_category",
+      "fresh_spring_green",
+      "kaimati_recipe",
+      "manrope_typography",
+      "pilau_recipe",
+      "porridges_category",
+      "pure_clean_white",
+      "rice_dishes_category",
+      "sahani_project"
+    ],
+    "4": [
+      "nutrition_targets_capability",
+      "nutrition_targets_table",
+      "onboarding_flow_capability",
+      "onboarding_wizard_route",
+      "seed_from_goal_mutation",
+      "signup_route",
+      "user_onboarding_flow_change",
+      "user_profile_capability",
+      "user_profile_table"
+    ],
+    "5": [
+      "sheet_cn",
+      "sheet_sheet",
+      "sheet_sheetclose",
+      "sheet_sheetdescription",
+      "sheet_sheetportal",
+      "sheet_sheettrigger",
+      "src_components_ui_sheet_tsx"
+    ],
+    "6": [
+      "sidebar_cn",
+      "sidebar_handlekeydown",
+      "sidebar_sidebarmenu",
+      "sidebar_sidebarmenubutton",
+      "sidebar_sidebarmenuitem",
+      "sidebar_usesidebar",
+      "src_components_ui_sidebar_tsx"
+    ],
+    "7": [
+      "index_handleaddrecipe",
+      "index_handlegenerateshoppinglist",
+      "index_handleslotclick",
+      "src_components_meal_planner_utils_ts",
+      "src_routes_meal_planner_index_tsx",
+      "utils_formatdaterange",
+      "utils_getweekdates"
+    ],
+    "8": [
+      "root_provider_getcontext",
+      "root_provider_provider",
+      "router_getrouter",
+      "src_integrations_tanstack_query_root_provider_tsx",
+      "src_router_tsx",
+      "src_routetree_gen_ts"
+    ],
+    "9": [
+      "dialog_cn",
+      "dialog_dialog",
+      "dialog_dialogclose",
+      "dialog_dialogportal",
+      "dialog_dialogtrigger",
+      "src_components_ui_dialog_tsx"
+    ],
+    "10": [
+      "alert_dialog_alertdialog",
+      "alert_dialog_alertdialogcancel",
+      "alert_dialog_cn",
+      "src_components_ui_alert_dialog_tsx"
+    ],
+    "11": [
+      "card_carddescription",
+      "card_cardfooter",
+      "card_cn",
+      "src_components_ui_card_tsx"
+    ],
+    "12": [
+      "avatar_avatar",
+      "avatar_avatarfallback",
+      "avatar_cn",
+      "src_components_ui_avatar_tsx"
+    ],
+    "13": [
+      "dropdown_menu_cn",
+      "dropdown_menu_dropdownmenu",
+      "dropdown_menu_dropdownmenusubcontent",
+      "src_components_ui_dropdown_menu_tsx"
+    ],
+    "14": [
+      "slider_cn",
+      "slider_slider",
+      "src_components_ui_slider_tsx"
+    ],
+    "15": [
+      "scroll_area_scrollarea",
+      "scroll_area_scrollbar",
+      "src_components_ui_scroll_area_tsx"
+    ],
+    "16": [
+      "root_notfoundpage",
+      "root_rootdocument",
+      "src_routes_root_tsx"
+    ],
+    "17": [
+      "login_handlegooglelogin",
+      "login_onsubmit",
+      "src_routes_login_tsx"
+    ],
+    "18": [
+      "account_handlesavediet",
+      "account_handlesavenutrition",
+      "src_routes_account_tsx"
+    ],
+    "19": [
+      "shopping_handledelete",
+      "shopping_handletoggle",
+      "src_routes_shopping_tsx"
+    ],
+    "20": [
+      "convex_generated_datamodel_d_ts",
+      "convex_schema_ts"
+    ],
+    "21": [
+      "provider_appconvexprovider",
+      "src_integrations_convex_provider_provider_tsx"
+    ],
+    "22": [
+      "src_components_ui_tabs_tsx",
+      "tabs_cn"
+    ],
+    "23": [
+      "label_label",
+      "src_components_ui_label_tsx"
+    ],
+    "24": [
+      "src_components_ui_tooltip_tsx",
+      "tooltip_tooltipcontent"
+    ],
+    "25": [
+      "badge_badge",
+      "src_components_ui_badge_tsx"
+    ],
+    "26": [
+      "separator_separator",
+      "src_components_ui_separator_tsx"
+    ],
+    "27": [
+      "button_cn",
+      "src_components_ui_button_tsx"
+    ],
+    "28": [
+      "checkbox_checkbox",
+      "src_components_ui_checkbox_tsx"
+    ],
+    "29": [
+      "src_components_ui_textarea_tsx",
+      "textarea_cn"
+    ],
+    "30": [
+      "input_input",
+      "src_components_ui_input_tsx"
+    ],
+    "31": [
+      "skeleton_skeleton",
+      "src_components_ui_skeleton_tsx"
+    ],
+    "32": [
+      "dashboard_dashboard",
+      "src_components_dashboard_dashboard_tsx"
+    ],
+    "33": [
+      "appsidebar_stories_mockappsidebar",
+      "src_components_sahani_appsidebar_stories_tsx"
+    ],
+    "34": [
+      "insightcard_insightcard",
+      "src_components_sahani_insightcard_tsx"
+    ],
+    "35": [
+      "pagelayout_pagelayout",
+      "src_components_sahani_pagelayout_tsx"
+    ],
+    "36": [
+      "sahanicard_sahanicard",
+      "src_components_sahani_sahanicard_tsx"
+    ],
+    "37": [
+      "appsidebar_appsidebar",
+      "src_components_sahani_appsidebar_tsx"
+    ],
+    "38": [
+      "emptyrecipesstate_emptyrecipesstate",
+      "src_components_meal_planner_emptyrecipesstate_tsx"
+    ],
+    "39": [
+      "recipequickadd_recipequickadd",
+      "src_components_meal_planner_recipequickadd_tsx"
+    ],
+    "40": [
+      "src_components_meal_planner_weeklyview_tsx",
+      "weeklyview_weeklyview"
+    ],
+    "41": [
+      "loadingstate_loadingstate",
+      "src_components_meal_planner_loadingstate_tsx"
+    ],
+    "42": [
+      "src_hooks_use_mobile_ts",
+      "use_mobile_useismobile"
+    ],
+    "43": [
+      "src_lib_utils_ts",
+      "utils_cn"
+    ],
+    "44": [
+      "index_rootpage",
+      "src_routes_index_tsx"
+    ],
+    "45": [
+      "signup_signuppage",
+      "src_routes_signup_tsx"
+    ],
+    "46": [
+      "recipes_new_createrecipepage",
+      "src_routes_recipes_new_tsx"
+    ],
+    "47": [
+      "onboarding_onboardingpage",
+      "src_routes_onboarding_tsx"
+    ],
+    "48": [
+      "mashed_dishes_category",
+      "mukimo_recipe"
+    ],
+    "49": [
+      "githeri_recipe",
+      "maize_dishes_category"
+    ],
+    "50": [
+      "vite_config_ts"
+    ],
+    "51": [
+      "convex_auth_config_ts"
+    ],
+    "52": [
+      "convex_convex_config_ts"
+    ],
+    "53": [
+      "convex_generated_server_d_ts"
+    ],
+    "54": [
+      "convex_generated_server_js"
+    ],
+    "55": [
+      "convex_generated_api_js"
+    ],
+    "56": [
+      "src_integrations_tanstack_query_devtools_tsx"
+    ],
+    "57": [
+      "src_integrations_better_auth_header_user_tsx"
+    ],
+    "58": [
+      "src_components_ui_card_stories_tsx"
+    ],
+    "59": [
+      "src_components_ui_input_stories_tsx"
+    ],
+    "60": [
+      "src_components_ui_button_stories_tsx"
+    ],
+    "61": [
+      "src_components_ui_progress_tsx"
+    ],
+    "62": [
+      "src_components_ui_separator_stories_tsx"
+    ],
+    "63": [
+      "src_components_ui_switch_stories_tsx"
+    ],
+    "64": [
+      "src_components_ui_checkbox_stories_tsx"
+    ],
+    "65": [
+      "src_components_ui_dialog_stories_tsx"
+    ],
+    "66": [
+      "src_components_ui_avatar_stories_tsx"
+    ],
+    "67": [
+      "src_components_ui_select_stories_tsx"
+    ],
+    "68": [
+      "src_components_ui_textarea_stories_tsx"
+    ],
+    "69": [
+      "src_components_ui_switch_tsx"
+    ],
+    "70": [
+      "src_components_ui_tabs_stories_tsx"
+    ],
+    "71": [
+      "src_components_ui_sheet_stories_tsx"
+    ],
+    "72": [
+      "src_components_ui_dropdown_menu_stories_tsx"
+    ],
+    "73": [
+      "src_components_ui_label_stories_tsx"
+    ],
+    "74": [
+      "src_components_ui_progress_stories_tsx"
+    ],
+    "75": [
+      "src_components_ui_skeleton_stories_tsx"
+    ],
+    "76": [
+      "src_components_ui_slider_stories_tsx"
+    ],
+    "77": [
+      "src_components_ui_scroll_area_stories_tsx"
+    ],
+    "78": [
+      "src_components_ui_badge_stories_tsx"
+    ],
+    "79": [
+      "src_components_ui_tooltip_stories_tsx"
+    ],
+    "80": [
+      "src_components_ui_alert_dialog_stories_tsx"
+    ],
+    "81": [
+      "src_components_landing_landingpage_tsx"
+    ],
+    "82": [
+      "src_components_sahani_recipecard_tsx"
+    ],
+    "83": [
+      "src_components_sahani_macrobar_stories_tsx"
+    ],
+    "84": [
+      "src_components_sahani_statcard_tsx"
+    ],
+    "85": [
+      "src_components_sahani_mealslot_stories_tsx"
+    ],
+    "86": [
+      "src_components_sahani_macrobar_tsx"
+    ],
+    "87": [
+      "src_components_sahani_nutritionring_stories_tsx"
+    ],
+    "88": [
+      "src_components_sahani_mealslot_tsx"
+    ],
+    "89": [
+      "src_components_sahani_insightcard_stories_tsx"
+    ],
+    "90": [
+      "src_components_sahani_sahanicard_stories_tsx"
+    ],
+    "91": [
+      "src_components_sahani_recipecard_stories_tsx"
+    ],
+    "92": [
+      "src_components_sahani_nutritionring_tsx"
+    ],
+    "93": [
+      "src_components_sahani_pagelayout_stories_tsx"
+    ],
+    "94": [
+      "src_components_sahani_statcard_stories_tsx"
+    ],
+    "95": [
+      "src_components_recipes_recipelist_tsx"
+    ],
+    "96": [
+      "src_components_recipes_recipedetail_tsx"
+    ],
+    "97": [
+      "src_components_meal_planner_mealcard_tsx"
+    ],
+    "98": [
+      "src_components_meal_planner_dailyview_tsx"
+    ],
+    "99": [
+      "src_components_meal_planner_plannersidebar_tsx"
+    ],
+    "100": [
+      "src_lib_auth_server_ts"
+    ],
+    "101": [
+      "src_lib_auth_ts"
+    ],
+    "102": [
+      "src_lib_auth_client_ts"
+    ],
+    "103": [
+      "src_routes_recipes_index_tsx"
+    ],
+    "104": [
+      "src_routes_recipes_tsx"
+    ],
+    "105": [
+      "src_routes_nutrition_tsx"
+    ],
+    "106": [
+      "src_routes_api_auth_ts"
+    ],
+    "107": [
+      "src_routes_meal_planner_landing_tsx"
+    ],
+    "108": [
+      "soft_cloud_gray"
+    ],
+    "109": [
+      "charcoal_deep"
+    ],
+    "110": [
+      "slate_medium"
+    ],
+    "111": [
+      "feather_light"
+    ],
+    "112": [
+      "misty_gray"
+    ],
+    "113": [
+      "component_stories_capability"
+    ],
+    "114": [
+      "meal_planner_route"
+    ],
+    "115": [
+      "legume_dishes_category"
+    ],
+    "116": [
+      "meats_fish_eggs_category"
+    ]
+  },
+  "cohesion": {
+    "0": 0.21,
+    "1": 0.17,
+    "2": 0.2,
+    "3": 0.2,
+    "4": 0.28,
+    "5": 0.29,
+    "6": 0.33,
+    "7": 0.29,
+    "8": 0.33,
+    "9": 0.33,
+    "10": 0.5,
+    "11": 0.5,
+    "12": 0.5,
+    "13": 0.5,
+    "14": 0.67,
+    "15": 0.67,
+    "16": 0.67,
+    "17": 0.67,
+    "18": 0.67,
+    "19": 0.67,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0
+  },
+  "gods": [
+    {
+      "id": "design_tokens_capability",
+      "label": "design-tokens",
+      "degree": 11
+    },
+    {
+      "id": "sahani_project",
+      "label": "sahani",
+      "degree": 7
+    },
+    {
+      "id": "sahani_card_component",
+      "label": "SahaniCard",
+      "degree": 4
+    },
+    {
+      "id": "user_onboarding_flow_change",
+      "label": "user-onboarding-flow",
+      "degree": 4
+    },
+    {
+      "id": "fresh_spring_green",
+      "label": "Fresh Spring Green",
+      "degree": 3
+    },
+    {
+      "id": "adopt_shadcn_components_change",
+      "label": "adopt-shadcn-components",
+      "degree": 3
+    },
+    {
+      "id": "sahani_wrappers_capability",
+      "label": "sahani-wrappers",
+      "degree": 3
+    },
+    {
+      "id": "onboarding_flow_capability",
+      "label": "onboarding-flow",
+      "degree": 3
+    },
+    {
+      "id": "nutrition_targets_capability",
+      "label": "nutrition-targets",
+      "degree": 3
+    },
+    {
+      "id": "user_profile_table",
+      "label": "userProfile table",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "sahani",
+      "target": "Manrope Typography",
+      "source_files": [
+        "README.md",
+        "DESIGN.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Manrope Typography` unexpectedly reaches hub `sahani`"
+    },
+    {
+      "source": "sahani",
+      "target": "adopt-shadcn-components",
+      "source_files": [
+        "README.md",
+        "openspec/changes/archive/2026-03-03-adopt-shadcn-components/proposal.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "sahani",
+      "target": "user-onboarding-flow",
+      "source_files": [
+        "README.md",
+        "openspec/changes/user-onboarding-flow/proposal.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "sahani",
+      "target": "Common Snacks",
+      "source_files": [
+        "README.md",
+        "docs/recipes.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Common Snacks` unexpectedly reaches hub `sahani`"
+    },
+    {
+      "source": "sahani",
+      "target": "Porridges",
+      "source_files": [
+        "README.md",
+        "docs/recipes.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Porridges` unexpectedly reaches hub `sahani`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `sahani` connect `Community 3` to `Community 0`, `Community 4`?",
+      "why": "High betweenness centrality (0.011) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `design-tokens` connect `Community 0` to `Community 3`?",
+      "why": "High betweenness centrality (0.008) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `user-onboarding-flow` connect `Community 4` to `Community 3`?",
+      "why": "High betweenness centrality (0.006) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 2 inferred relationships involving `SahaniCard` (e.g. with `StatCard` and `RecipeCard`) actually correct?",
+      "why": "`SahaniCard` has 2 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Pure Clean White`, `Soft Cloud Gray`, `Charcoal Deep` to the rest of the system?",
+      "why": "25 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}
