@@ -25,14 +25,15 @@ interface DashboardProps {
 }
 
 export function Dashboard({ userName }: DashboardProps) {
-	const todayStr = new Date().toISOString().split("T")[0];
-	const nutritionTargets = useQuery(api.nutritionTargets.get);
-	const dailyTotals = useQuery(api.nutritionTargets.calculateDailyTotals, {
-		date: todayStr,
-	});
-	const mealPlans = useQuery(api.mealPlans.listByDate, { date: todayStr });
-	const trendingRecipes = useQuery(api.recipes.list, {});
-	const shoppingLists = useQuery(api.shoppingLists.list);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const nutritionTargets = useQuery(api.nutritionTargets.get);
+  const dailyTotals = useQuery(api.nutritionTargets.calculateDailyTotals, {
+    date: todayStr,
+  });
+  const mealPlans = useQuery(api.mealPlans.listByDate, { date: todayStr });
+  const trendingRecipes = useQuery(api.recipes.list, {});
+  const shoppingLists = useQuery(api.shoppingLists.list);
+  const dailyTip = useQuery(api.dailyTips.getDaily);
 
 	const calorieTarget = nutritionTargets?.dailyCalories ?? 2000;
 	const caloriesConsumed = Math.round(dailyTotals?.calories ?? 0);
@@ -163,23 +164,25 @@ export function Dashboard({ userName }: DashboardProps) {
 							</div>
 						</SahaniCard>
 
-						<SahaniCard variant="dark" className="rounded-[40px]">
-							<Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
-							<h4 className="font-black flex items-center gap-2 mb-4">
-								<Sparkles className="w-4 h-4 text-primary" />
-								Getting Started Tip
-							</h4>
-							<p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
-								Add a few recipes you love, then use the meal planner to assign them to your week. sahani will track your nutrition automatically.
-							</p>
-						</SahaniCard>
-					</div>
-				</div>
-			</>
-		);
-	}
+    <SahaniCard variant="dark" className="rounded-[40px]">
+      <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
+      <h4 className="font-black flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-primary" /> 
+        Getting Started Tip
+      </h4>
+      <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
+        Add a few recipes you love, then use the meal planner to assign them to your week. sahani will track your nutrition automatically.
+      </p>
+    </SahaniCard>
+  </div>
+</div>
+</>);
+  }
 
-	return (
+  // Get daily tip text (from Convex or fallback)
+  const tipText = dailyTip?.text || "Adding a source of vitamin C (like lemon) to your spinach helps your body absorb the iron more efficiently.";
+
+return (
 		<>
 			{/* Header */}
 			<div className="flex items-center justify-between mb-10">
@@ -359,17 +362,17 @@ export function Dashboard({ userName }: DashboardProps) {
 						</div>
 					</SahaniCard>
 
-					{/* Daily Tip */}
-					<SahaniCard variant="dark" className="rounded-[40px]">
-						<Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
-						<h4 className="font-black flex items-center gap-2 mb-4">
-							<Sparkles className="w-4 h-4 text-primary" />
-							Daily Tip
-						</h4>
-						<p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
-							"Adding a source of vitamin C (like lemon) to your spinach helps your body absorb the iron more efficiently."
-						</p>
-					</SahaniCard>
+    {/* Daily Tip */}
+    <SahaniCard variant="dark" className="rounded-[40px]">
+      <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
+      <h4 className="font-black flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-primary" />
+        Daily Tip
+      </h4>
+      <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
+        {tipText}
+      </p>
+    </SahaniCard>
 				</div>
 			</div>
 		</>
