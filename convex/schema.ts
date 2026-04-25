@@ -77,6 +77,18 @@ export default defineSchema({
     createdAt: v.number(),
   }).index('by_user', ['userId']),
 
+  recipeReviews: defineTable({
+    recipeId: v.id('recipes'),
+    userId: v.string(),
+    rating: v.number(), // 1-5
+    text: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_recipe', ['recipeId'])
+    .index('by_user', ['userId'])
+    .index('by_recipe_user', ['recipeId', 'userId']),
+
   shoppingLists: defineTable({
     userId: v.string(),
     name: v.string(),
