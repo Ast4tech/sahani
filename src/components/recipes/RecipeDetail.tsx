@@ -1,13 +1,30 @@
 import { useState } from "react";
 import type { Doc } from "convex/_generated/dataModel";
 import { ChefHat, Clock, Minus, Plus, Star, Utensils } from "lucide-react";
+import { scaleAmount } from "@/lib/recipe-utils";
 
 interface RecipeDetailProps {
   recipe: Doc<"recipes"> | null;
 }
 
 export function RecipeDetail({ recipe }: RecipeDetailProps) {
-  const [servings, setServings] = useState(1);
+  const [servings, setServings] = useState(recipe?.servings || 1);
+
+  // Calculate scale factor based on recipe's base servings
+  const baseServings = recipe?.servings || 1;
+  const scaleFactor = servings / baseServings;
+
+  // Scale ingredients with amounts
+  const scaledIngredients = recipe?.ingredients?.map((ing) => ({
+    ...ing,
+    amount: scaleAmount(ing.amount, scaleFactor),
+  })) || [{ name: "Fresh ingredients", amount: "Various" }];
+
+  // Scale nutrition values
+  const scaledCalories = Math.round((recipe?.calories || 0) * scaleFactor);
+  const scaledProtein = Math.round((recipe?.protein || 0) * scaleFactor);
+  const scaledCarbs = Math.round((recipe?.carbs || 0) * scaleFactor);
+  const scaledFat = Math.round((recipe?.fat || 0) * scaleFactor);
 
   if (!recipe) {
     return (
@@ -42,7 +59,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
               Kcals
             </p>
             <p className="text-lg font-black text-foreground">
-              {recipe.calories}
+              {scaledCalories}
             </p>
           </div>
           <div className="bg-secondary border border-border rounded-2xl p-4 text-center">
@@ -66,7 +83,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
               Carbs
             </p>
             <p className="text-lg font-black text-foreground">
-              {recipe.carbs || 0}
+              {scaledCarbs}
             </p>
           </div>
           <div className="bg-secondary border border-border rounded-2xl p-4 text-center">
@@ -77,7 +94,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
               Fat
             </p>
             <p className="text-lg font-black text-foreground">
-              {recipe.fat || 0}
+              {scaledFat}
             </p>
           </div>
         </div>
@@ -190,11 +207,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
           </div>
 
           <ul className="space-y-4">
-            {(
-              recipe.ingredients || [
-                { name: "Fresh ingredients", amount: "Various" },
-              ]
-            ).map((ing, i) => (
+            {scaledIngredients.map((ing, i) => (
               <li key={i} className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <div className="w-2 h-2 rounded-full bg-primary" />
@@ -224,9 +237,9 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Calories
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {recipe.calories}
-              </p>
+<p className="font-black text-foreground">
+              {scaledCalories}
+            </p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -237,9 +250,9 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Protein
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {recipe.protein || 0}g
-              </p>
+<p className="font-black text-foreground">
+              {scaledProtein}g
+            </p>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -250,9 +263,9 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
                   Total Fat
                 </p>
               </div>
-              <p className="font-black text-foreground">
-                {recipe.fat || 0}g
-              </p>
+<p className="font-black text-foreground">
+              {scaledFat}g
+            </p>
             </div>
           </div>
         </div>
