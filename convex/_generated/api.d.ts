@@ -9,6 +9,7 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as dailyTips from "../dailyTips.js";
 import type * as http from "../http.js";
 import type * as mealPlans from "../mealPlans.js";
 import type * as nutritionAnalytics from "../nutritionAnalytics.js";
@@ -29,6 +30,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  dailyTips: typeof dailyTips;
   http: typeof http;
   mealPlans: typeof mealPlans;
   nutritionAnalytics: typeof nutritionAnalytics;

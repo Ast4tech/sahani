@@ -106,11 +106,13 @@ export default defineSchema({
   })
     .index('by_user', ['userId']),
 
-  waterLogs: defineTable({
-    userId: v.string(),
-    amount: v.number(), // ml
-    loggedAt: v.number(),
+  dailyTips: defineTable({
+    text: v.string(),
+    category: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    isActive: v.boolean(),
+    createdAt: v.number(),
   })
-    .index('by_user', ['userId'])
-    .index('by_user_date', ['userId', 'loggedAt']),
+    .index('by_category', ['category'])
+    .index('by_active', ['isActive']),
 })

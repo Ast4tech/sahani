@@ -35,6 +35,7 @@ export function Dashboard({ userName }: DashboardProps) {
   const mealPlans = useQuery(api.mealPlans.listByDate, { date: todayStr });
   const trendingRecipes = useQuery(api.recipes.list, {});
   const shoppingLists = useQuery(api.shoppingLists.list);
+  const dailyTip = useQuery(api.dailyTips.getDaily);
 
   const calorieTarget = nutritionTargets?.dailyCalories ?? 2000;
   const caloriesConsumed = Math.round(dailyTotals?.calories ?? 0);
@@ -209,48 +210,48 @@ const nextRecipe = useQuery(
               </div>
             </SahaniCard>
 
-            <SahaniCard variant="dark" className="rounded-[40px]">
-              <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
-              <h4 className="font-black flex items-center gap-2 mb-4">
-                <Sparkles className="w-4 h-4 text-primary" />
-                Getting Started Tip
-              </h4>
-              <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
-                Add a few recipes you love, then use the meal planner to assign
-                them to your week. sahani will track your nutrition
-                automatically.
-              </p>
-            </SahaniCard>
-          </div>
-        </div>
-      </>
-    );
+    <SahaniCard variant="dark" className="rounded-[40px]">
+      <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
+      <h4 className="font-black flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-primary" /> 
+        Getting Started Tip
+      </h4>
+      <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
+        Add a few recipes you love, then use the meal planner to assign them to your week. sahani will track your nutrition automatically.
+      </p>
+    </SahaniCard>
+  </div>
+</div>
+</>);
   }
 
-  return (
-    <>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            Good morning, {userName.split(" ")[0]}! 👋
-          </h1>
-          <p className="text-muted-foreground font-medium mt-1">
-            Ready to crush your nutrition goals today?
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link to="/meal-planner">
-            <Button className="bg-card border border-border text-foreground hover:bg-secondary rounded-2xl px-6 h-12 font-bold shadow-sm">
-              View Planner
-            </Button>
-          </Link>
-          <Button className="bg-primary hover:bg-sahani-green-hover text-primary-foreground rounded-2xl px-6 h-12 font-black shadow-lg shadow-primary/20 transition-all">
-            <Plus className="w-5 h-5 mr-2" />
-            Log Meal
-          </Button>
-        </div>
-      </div>
+  // Get daily tip text (from Convex or fallback)
+  const tipText = dailyTip?.text || "Adding a source of vitamin C (like lemon) to your spinach helps your body absorb the iron more efficiently.";
+
+return (
+		<>
+			{/* Header */}
+			<div className="flex items-center justify-between mb-10">
+				<div>
+					<h1 className="text-3xl font-black text-foreground tracking-tight">
+						Good morning, {userName.split(" ")[0]}! 👋
+					</h1>
+					<p className="text-muted-foreground font-medium mt-1">
+						Ready to crush your nutrition goals today?
+					</p>
+				</div>
+				<div className="flex items-center gap-3">
+					<Link to="/meal-planner">
+						<Button className="bg-card border border-border text-foreground hover:bg-secondary rounded-2xl px-6 h-12 font-bold shadow-sm">
+							View Planner
+						</Button>
+					</Link>
+					<Button className="bg-primary hover:bg-sahani-green-hover text-primary-foreground rounded-2xl px-6 h-12 font-black shadow-lg shadow-primary/20 transition-all">
+						<Plus className="w-5 h-5 mr-2" />
+						Log Meal
+					</Button>
+				</div>
+			</div>
 
       <div className="grid grid-cols-12 gap-8">
         {/* Left Column: Hero & Timeline */}
@@ -469,20 +470,19 @@ const nextRecipe = useQuery(
             </div>
           </SahaniCard>
 
-          {/* Daily Tip */}
-          <SahaniCard variant="dark" className="rounded-[40px]">
-            <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
-            <h4 className="font-black flex items-center gap-2 mb-4">
-              <Sparkles className="w-4 h-4 text-primary" />
-              Daily Tip
-            </h4>
-            <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
-              "Adding a source of vitamin C (like lemon) to your spinach helps
-              your body absorb the iron more efficiently."
-            </p>
-          </SahaniCard>
-        </div>
-      </div>
-    </>
-  );
+    {/* Daily Tip */}
+    <SahaniCard variant="dark" className="rounded-[40px]">
+      <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
+      <h4 className="font-black flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-primary" />
+        Daily Tip
+      </h4>
+      <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
+        {tipText}
+      </p>
+    </SahaniCard>
+				</div>
+			</div>
+		</>
+	);
 }
