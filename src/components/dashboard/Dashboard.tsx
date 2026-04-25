@@ -7,16 +7,18 @@ import { SahaniCard } from "@/components/sahani/SahaniCard";
 import { NutritionRing } from "@/components/sahani/NutritionRing";
 import { MacroBar } from "@/components/sahani/MacroBar";
 import { RecipeCard } from "@/components/sahani/RecipeCard";
+import { WaterTracker } from "@/components/water/WaterTracker";
 import {
-	Activity,
-	ArrowRight,
-	ChefHat,
-	Clock,
-	Flame,
-	Plus,
-	ShoppingCart,
-	Sparkles,
-	TrendingUp,
+  Activity,
+  ArrowRight,
+  ChefHat,
+  Clock,
+  Droplets,
+  Flame,
+  Plus,
+  ShoppingCart,
+  Sparkles,
+  TrendingUp,
 } from "lucide-react";
 
 interface DashboardProps {
@@ -156,20 +158,26 @@ export function Dashboard({ userName }: DashboardProps) {
 						<SahaniCard variant="default" className="rounded-[40px]">
 							<h3 className="text-xl font-black text-foreground mb-8">Your Targets</h3>
 							<NutritionRing value={0} target={calorieTarget} label="Calories" className="mb-10" />
-							<div className="space-y-6">
-								<MacroBar label="Protein" value={0} target={proteinTarget} color="blue" />
-								<MacroBar label="Carbs" value={0} target={carbsTarget} color="amber" />
-								<MacroBar label="Hydration" value={0} target={2500} color="cyan" />
-							</div>
-						</SahaniCard>
+      <div className="space-y-6">
+        <MacroBar label="Protein" value={0} target={proteinTarget} color="blue" />
+        <MacroBar label="Carbs" value={0} target={carbsTarget} color="amber" />
+        <div className="pt-4 border-t border-border">
+          <div className="flex items-center gap-2 mb-3">
+            <Droplets className="w-4 h-4 text-cyan-500" />
+            <span className="text-sm font-bold text-muted-foreground">Hydration</span>
+          </div>
+          <WaterTracker target={2500} />
+        </div>
+      </div>
+    </SahaniCard>
 
-						<SahaniCard variant="dark" className="rounded-[40px]">
-							<Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
-							<h4 className="font-black flex items-center gap-2 mb-4">
-								<Sparkles className="w-4 h-4 text-primary" />
-								Getting Started Tip
-							</h4>
-							<p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
+    <SahaniCard variant="dark" className="rounded-[40px]">
+      <Sparkles className="absolute -bottom-4 -right-4 w-24 h-24 text-primary opacity-10 rotate-12" />
+      <h4 className="font-black flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-primary" /> 
+        Getting Started Tip
+      </h4>
+      <p className="text-xs text-sahani-tertiary leading-relaxed font-medium">
 								Add a few recipes you love, then use the meal planner to assign them to your week. sahani will track your nutrition automatically.
 							</p>
 						</SahaniCard>
@@ -317,22 +325,28 @@ export function Dashboard({ userName }: DashboardProps) {
 				{/* Right Column: Nutrition Rings & Shopping */}
 				<div className="col-span-4 space-y-8">
 					{/* Nutrition Stats */}
-					<SahaniCard variant="default" className="rounded-[40px]">
-						<h3 className="text-xl font-black text-foreground mb-8">Live Nutrition</h3>
-						<NutritionRing
-							value={caloriesConsumed}
-							target={calorieTarget}
-							label="Calories"
-							className="mb-10"
-						/>
-						<div className="space-y-6">
-							<MacroBar label="Protein" value={proteinConsumed} target={proteinTarget} color="blue" />
-							<MacroBar label="Carbs" value={carbsConsumed} target={carbsTarget} color="amber" />
-							<MacroBar label="Hydration" value={1200} target={2500} color="cyan" />
-						</div>
-					</SahaniCard>
+      <SahaniCard variant="default" className="rounded-[40px]">
+        <h3 className="text-xl font-black text-foreground mb-8">Live Nutrition</h3>
+        <NutritionRing
+          value={caloriesConsumed}
+          target={calorieTarget}
+          label="Calories"
+          className="mb-10"
+        />
+        <div className="space-y-6">
+          <MacroBar label="Protein" value={proteinConsumed} target={proteinTarget} color="blue" />
+          <MacroBar label="Carbs" value={carbsConsumed} target={carbsTarget} color="amber" />
+          <div className="pt-4 border-t border-border">
+            <div className="flex items-center gap-2 mb-3">
+              <Droplets className="w-4 h-4 text-cyan-500" />
+              <span className="text-sm font-bold text-muted-foreground">Hydration</span>
+            </div>
+            <WaterTracker target={2500} />
+          </div>
+        </div>
+      </SahaniCard>
 
-					{/* Shopping List Shortcut */}
+    {/* Shopping List Shortcut */}
 					<SahaniCard variant="tip">
 						<div className="flex items-center justify-between mb-6">
 							<h3 className="font-black text-foreground flex items-center gap-2">

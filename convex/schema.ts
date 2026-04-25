@@ -105,4 +105,12 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index('by_user', ['userId']),
+
+  waterLogs: defineTable({
+    userId: v.string(),
+    amount: v.number(), // ml
+    loggedAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_date', ['userId', 'loggedAt']),
 })
