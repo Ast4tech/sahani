@@ -16,6 +16,21 @@ export const list = query({
     const user = await authComponent.getAuthUser(ctx)
     if (!user) return []
 
+    // If favoritesOnly, fetch from userFavorites table
+    if (args.favoritesOnly) {
+      const favorites = await ctx.db
+        .query('userFavorites')
+        .withIndex('by_user', (q) => q.eq('userId', user._id))
+        .collect()
+
+      const recipeIds = favorites.map((f) => f.recipeId)
+      const recipes = await Promise.all(
+        recipeIds.map((id) => ctx.db.get(id))
+      )
+      return recipes.filter((r): r is NonNullable<typeof r> => r !== null)
+    }
+
+    // Default: fetch user's recipes + public recipes
     const userRecipes = await ctx.db
       .query('recipes')
       .withIndex('by_user', (q) => q.eq('userId', user._id))
@@ -27,11 +42,6 @@ export const list = query({
       .collect()
 
     const allRecipes = [...userRecipes, ...publicRecipes].sort((a, b) => b.createdAt - a.createdAt)
-
-    if (args.favoritesOnly) {
-      return allRecipes.filter(r => r.isFavorite && r.userId === user._id)
-    }
-
     return allRecipes
   },
 })
