@@ -197,6 +197,23 @@ export const getUserFavorites = query({
   },
 })
 
+export const isRecipeFavorite = query({
+  args: {
+    recipeId: v.id('recipes'),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) return false
+
+    const favorite = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user_recipe', (q) => q.eq('userId', user._id).eq('recipeId', args.recipeId))
+      .unique()
+
+    return favorite !== null
+  },
+})
+
 export const remove = mutation({
   args: { id: v.id('recipes') },
   handler: async (ctx, args) => {
