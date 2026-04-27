@@ -152,6 +152,33 @@ export const toggleFavorite = mutation({
   },
 })
 
+export const toggleUserFavorite = mutation({
+  args: {
+    recipeId: v.id('recipes'),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) throw new Error('Unauthorized')
+
+    const existing = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user_recipe', (q) => q.eq('userId', user._id).eq('recipeId', args.recipeId))
+      .unique()
+
+    if (existing) {
+      await ctx.db.delete(existing._id)
+      return { isFavorite: false }
+    } else {
+      await ctx.db.insert('userFavorites', {
+        userId: user._id,
+        recipeId: args.recipeId,
+        createdAt: Date.now(),
+      })
+      return { isFavorite: true }
+    }
+  },
+})
+
 export const remove = mutation({
   args: { id: v.id('recipes') },
   handler: async (ctx, args) => {
