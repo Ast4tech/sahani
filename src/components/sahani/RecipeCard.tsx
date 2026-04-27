@@ -23,7 +23,20 @@ function RecipeCard({
   className,
   ...props
 }: RecipeCardProps) {
-	return (
+  const [optimisticFavorite, setOptimisticFavorite] = React.useState(isFavorite);
+
+  // Sync with prop changes
+  React.useEffect(() => {
+    setOptimisticFavorite(isFavorite);
+  }, [isFavorite]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOptimisticFavorite(!optimisticFavorite);
+    onFavoriteToggle?.(id);
+  };
+
+  return (
 		<div
 			className={cn(
 				"min-w-[240px] bg-card rounded-3xl border border-border shadow-sm overflow-hidden group hover:shadow-lg transition-all cursor-pointer",
@@ -45,17 +58,14 @@ function RecipeCard({
 				)}
       {/* Favorite button - top left */}
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onFavoriteToggle?.(id);
-        }}
+        onClick={handleClick}
         className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm hover:scale-110 transition-transform z-10"
-        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        aria-label={optimisticFavorite ? "Remove from favorites" : "Add to favorites"}
       >
         <Heart
           className={cn(
             "w-4 h-4 transition-colors",
-            isFavorite ? "fill-rose-500 text-rose-500" : "text-sahani-tertiary"
+            optimisticFavorite ? "fill-rose-500 text-rose-500" : "text-sahani-tertiary"
           )}
         />
       </button>
