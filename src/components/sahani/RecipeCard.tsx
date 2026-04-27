@@ -1,21 +1,27 @@
 import * as React from "react";
-import { ArrowRight, ChefHat, Star } from "lucide-react";
+import { ArrowRight, ChefHat, Heart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RecipeCardProps extends React.HTMLAttributes<HTMLDivElement> {
-	name: string;
-	imageUrl?: string;
-	calories: number;
-	rating?: number;
+  id: string;
+  name: string;
+  imageUrl?: string;
+  calories: number;
+  rating?: number;
+  isFavorite?: boolean;
+  onFavoriteToggle?: (id: string) => void;
 }
 
 function RecipeCard({
-	name,
-	imageUrl,
-	calories,
-	rating,
-	className,
-	...props
+  id,
+  name,
+  imageUrl,
+  calories,
+  rating,
+  isFavorite,
+  onFavoriteToggle,
+  className,
+  ...props
 }: RecipeCardProps) {
 	return (
 		<div
@@ -37,8 +43,24 @@ function RecipeCard({
 						<ChefHat className="w-10 h-10 text-sahani-tertiary" />
 					</div>
 				)}
-				{rating !== undefined && (
-					<div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg">
+      {/* Favorite button - top left */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onFavoriteToggle?.(id);
+        }}
+        className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm hover:scale-110 transition-transform z-10"
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      >
+        <Heart
+          className={cn(
+            "w-4 h-4 transition-colors",
+            isFavorite ? "fill-rose-500 text-rose-500" : "text-sahani-tertiary"
+          )}
+        />
+      </button>
+      {rating !== undefined && (
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg">
 						<div className="flex items-center gap-1">
 							<Star className="w-3 h-3 fill-primary text-primary" />
 							<span className="text-[10px] font-black text-foreground">
