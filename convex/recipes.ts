@@ -174,8 +174,26 @@ export const toggleUserFavorite = mutation({
         recipeId: args.recipeId,
         createdAt: Date.now(),
       })
-      return { isFavorite: true }
-    }
+    return { isFavorite: true }
+  },
+})
+
+export const getUserFavorites = query({
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) return []
+
+    const favorites = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user', (q) => q.eq('userId', user._id))
+      .order('desc')
+      .take(20)
+
+    const recipes = await Promise.all(
+      favorites.map((f) => ctx.db.get(f.recipeId))
+    )
+
+    return recipes.filter((r): r is NonNullable<typeof r> => r !== null)
   },
 })
 
