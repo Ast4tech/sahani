@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { SahaniCard } from "@/components/sahani/SahaniCard";
@@ -40,9 +41,9 @@ export function Dashboard({ userName }: DashboardProps) {
   const favoriteRecipes = useQuery(api.recipes.getUserFavorites);
 
   const toggleFavorite = useMutation(api.recipes.toggleUserFavorite);
-  const handleToggleFavorite = async (recipeId: string) => {
-    try {
-      await toggleFavorite({ recipeId });
+const handleToggleFavorite = async (recipeId: Id<"recipes">) => {
+  try {
+    await toggleFavorite({ recipeId });
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
     }
