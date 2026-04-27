@@ -116,11 +116,20 @@ export default defineSchema({
     .index('by_category', ['category'])
     .index('by_active', ['isActive']),
 
-  waterLogs: defineTable({
+waterLogs: defineTable({
     userId: v.string(),
     amount: v.number(), // ml
     loggedAt: v.number(),
   })
+  .index('by_user', ['userId'])
+  .index('by_user_date', ['userId', 'loggedAt']),
+
+  userFavorites: defineTable({
+    userId: v.string(),
+    recipeId: v.id('recipes'),
+    createdAt: v.number(),
+  })
     .index('by_user', ['userId'])
-    .index('by_user_date', ['userId', 'loggedAt']),
+    .index('by_recipe', ['recipeId'])
+    .index('by_user_recipe', ['userId', 'recipeId']),
 })
