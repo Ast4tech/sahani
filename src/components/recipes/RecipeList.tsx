@@ -1,19 +1,39 @@
 import { Button } from "@/components/ui/button";
 import type { Doc } from "convex/_generated/dataModel";
 import { ChefHat, Filter, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface RecipeListProps {
   recipes: Doc<"recipes">[] | undefined;
   selectedRecipeId: string | null;
   onSelect: (id: string) => void;
+  showFavoritesOnly?: boolean;
+  onToggleFavorites?: () => void;
 }
 
-export function RecipeList({ recipes, selectedRecipeId, onSelect }: RecipeListProps) {
+export function RecipeList({
+  recipes,
+  selectedRecipeId,
+  onSelect,
+  showFavoritesOnly,
+  onToggleFavorites,
+}: RecipeListProps) {
   return (
     <div className="w-[400px] border-r border-border bg-card flex flex-col">
       <div className="p-6 flex items-center justify-between border-b border-border">
-        <h1 className="text-xl font-black text-foreground">All Recipes</h1>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
+        <h1 className="text-xl font-black text-foreground">
+          {showFavoritesOnly ? "Favorite Recipes" : "All Recipes"}
+        </h1>
+        <Button
+          variant={showFavoritesOnly ? "default" : "ghost"}
+          size="icon"
+          onClick={onToggleFavorites}
+          className={cn(
+            "transition-colors",
+            showFavoritesOnly && "bg-primary text-primary-foreground"
+          )}
+          aria-label={showFavoritesOnly ? "Show all recipes" : "Show favorites only"}
+        >
           <Filter className="w-5 h-5" />
         </Button>
       </div>
