@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "convex/_generated/api";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   Clock,
   Droplets,
   Flame,
+  Heart,
   Plus,
   ShoppingCart,
   Sparkles,
@@ -36,6 +37,16 @@ export function Dashboard({ userName }: DashboardProps) {
   const trendingRecipes = useQuery(api.recipes.list, {});
   const shoppingLists = useQuery(api.shoppingLists.list);
   const dailyTip = useQuery(api.dailyTips.getDaily);
+  const favoriteRecipes = useQuery(api.recipes.getUserFavorites);
+
+  const toggleFavorite = useMutation(api.recipes.toggleUserFavorite);
+  const handleToggleFavorite = async (recipeId: string) => {
+    try {
+      await toggleFavorite({ recipeId });
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+    }
+  };
 
   const calorieTarget = nutritionTargets?.dailyCalories ?? 2000;
   const caloriesConsumed = Math.round(dailyTotals?.calories ?? 0);
@@ -149,15 +160,18 @@ const nextRecipe = useQuery(
                 </Link>
               </div>
               <div className="flex gap-6 overflow-x-auto pb-4">
-                {(trendingRecipes ?? []).slice(0, 3).map((recipe) => (
-                  <RecipeCard
-                    key={recipe._id}
-                    name={recipe.name}
-                    imageUrl={recipe.imageUrl}
-                    calories={recipe.calories}
-                    rating={4.9}
-                  />
-                ))}
+          {(trendingRecipes ?? []).slice(0, 3).map((recipe) => (
+            <RecipeCard
+              key={recipe._id}
+              id={recipe._id}
+              name={recipe.name}
+              imageUrl={recipe.imageUrl}
+              calories={recipe.calories}
+              rating={4.9}
+              isFavorite={false}
+              onFavoriteToggle={() => handleToggleFavorite(recipe._id)}
+            />
+          ))}
                 {(trendingRecipes ?? []).length === 0 && (
                   <Link
                     to="/recipes/new"
@@ -367,32 +381,71 @@ return (
             </div>
           </div>
 
-          {/* Trending Recipes */}
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-black text-foreground flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                New in the Kitchen
-              </h3>
-              <Link
-                to="/recipes"
-                className="text-xs font-black text-primary hover:underline uppercase tracking-wider"
-              >
-                Explore All
-              </Link>
+      {/* My Favorites Section */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-black text-foreground flex items-center gap-2">
+            <Heart className="w-5 h-5 text-rose-500" />
+            My Favorites
+          </h3>
+          <Link
+            to="/recipes"
+            className="text-xs font-black text-primary hover:underline uppercase tracking-wider"
+          >
+            See All
+          </Link>
+        </div>
+        <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+          {favoriteRecipes?.slice(0, 6).map((recipe) => (
+            <RecipeCard
+              key={recipe._id}
+              id={recipe._id}
+              name={recipe.name}
+              imageUrl={recipe.imageUrl}
+              calories={recipe.calories}
+              isFavorite={true}
+              onFavoriteToggle={() => handleToggleFavorite(recipe._id)}
+            />
+          ))}
+          {favoriteRecipes?.length === 0 && (
+            <div className="text-center py-8 text-sahani-tertiary w-full">
+              <Heart className="w-12 h-12 mx-auto mb-3 opacity-20" />
+              <p className="text-sm font-bold">No favorites yet</p>
+              <p className="text-xs">Save recipes you love!</p>
             </div>
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-              {trendingRecipes?.slice(0, 6).map((recipe) => (
-                <RecipeCard
-                  key={recipe._id}
-                  name={recipe.name}
-                  imageUrl={recipe.imageUrl}
-                  calories={recipe.calories}
-                  rating={4.9}
-                />
-              ))}
-            </div>
-          </div>
+          )}
+        </div>
+      </div>
+
+      {/* Trending Recipes */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-black text-foreground flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            New in the Kitchen
+          </h3>
+          <Link
+            to="/recipes"
+            className="text-xs font-black text-primary hover:underline uppercase tracking-wider"
+          >
+            Explore All
+          </Link>
+        </div>
+        <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+          {trendingRecipes?.slice(0, 6).map((recipe) => (
+            <RecipeCard
+              key={recipe._id}
+              id={recipe._id}
+              name={recipe.name}
+              imageUrl={recipe.imageUrl}
+              calories={recipe.calories}
+              rating={4.9}
+              isFavorite={false}
+              onFavoriteToggle={() => handleToggleFavorite(recipe._id)}
+            />
+          ))}
+        </div>
+      </div>
         </div>
 
         {/* Right Column: Nutrition Rings & Shopping */}
