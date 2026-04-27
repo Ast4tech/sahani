@@ -185,6 +185,7 @@ export const toggleUserFavorite = mutation({
         createdAt: Date.now(),
       })
     return { isFavorite: true }
+  }
   },
 })
 
