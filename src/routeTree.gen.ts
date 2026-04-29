@@ -21,6 +21,7 @@ import { Route as RecipesIndexRouteImport } from './routes/recipes.index'
 import { Route as MealPlannerIndexRouteImport } from './routes/meal-planner/index'
 import { Route as RecipesNewRouteImport } from './routes/recipes.new'
 import { Route as MealPlannerLandingRouteImport } from './routes/meal-planner/landing'
+import { Route as RecipesIdEditRouteImport } from './routes/recipes.$id.edit'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SignupRoute = SignupRouteImport.update({
@@ -83,6 +84,11 @@ const MealPlannerLandingRoute = MealPlannerLandingRouteImport.update({
   path: '/meal-planner/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecipesIdEditRoute = RecipesIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => RecipesRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/meal-planner/': typeof MealPlannerIndexRoute
   '/recipes/': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/recipes/$id/edit': typeof RecipesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/meal-planner': typeof MealPlannerIndexRoute
   '/recipes': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/recipes/$id/edit': typeof RecipesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/meal-planner/': typeof MealPlannerIndexRoute
   '/recipes/': typeof RecipesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/recipes/$id/edit': typeof RecipesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/meal-planner/'
     | '/recipes/'
     | '/api/auth/$'
+    | '/recipes/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/meal-planner'
     | '/recipes'
     | '/api/auth/$'
+    | '/recipes/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/meal-planner/'
     | '/recipes/'
     | '/api/auth/$'
+    | '/recipes/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -281,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MealPlannerLandingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recipes/$id/edit': {
+      id: '/recipes/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/recipes/$id/edit'
+      preLoaderRoute: typeof RecipesIdEditRouteImport
+      parentRoute: typeof RecipesRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -294,11 +313,13 @@ declare module '@tanstack/react-router' {
 interface RecipesRouteChildren {
   RecipesNewRoute: typeof RecipesNewRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
+  RecipesIdEditRoute: typeof RecipesIdEditRoute
 }
 
 const RecipesRouteChildren: RecipesRouteChildren = {
   RecipesNewRoute: RecipesNewRoute,
   RecipesIndexRoute: RecipesIndexRoute,
+  RecipesIdEditRoute: RecipesIdEditRoute,
 }
 
 const RecipesRouteWithChildren =

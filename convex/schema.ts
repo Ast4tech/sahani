@@ -30,6 +30,12 @@ export default defineSchema({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(v.object({
+      text: v.string(),
+      imageStorageId: v.optional(v.string()),
+      order: v.number(),
+    }))),
     tags: v.optional(v.array(v.string())),
     isFavorite: v.optional(v.boolean()),
     createdAt: v.number(),

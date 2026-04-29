@@ -8,6 +8,12 @@ const ingredientValidator = v.object({
   unit: v.optional(v.string()),
 })
 
+const stepValidator = v.object({
+  text: v.string(),
+  imageStorageId: v.optional(v.string()),
+  order: v.number(),
+})
+
 export const list = query({
   args: {
     favoritesOnly: v.optional(v.boolean()),
@@ -79,6 +85,36 @@ export const search = query({
   },
 })
 
+export const listAllIngredients = query({
+  args: {},
+  handler: async (ctx) => {
+    const recipes = await ctx.db.query('recipes').collect()
+    const names = new Set<string>()
+    for (const r of recipes) {
+      for (const ing of r.ingredients) {
+        if (ing.name.trim()) names.add(ing.name.trim())
+      }
+    }
+    return Array.from(names).sort()
+  },
+})
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) throw new Error('Unauthorized')
+    return await ctx.storage.generateUploadUrl()
+  },
+})
+
+export const getImageUrl = query({
+  args: { storageId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId)
+  },
+})
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -93,6 +129,8 @@ export const create = mutation({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(stepValidator)),
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
@@ -125,6 +163,8 @@ export const update = mutation({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(stepValidator)),
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
