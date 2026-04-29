@@ -14,7 +14,8 @@ export const Route = createFileRoute("/recipes/")({
 
 function RecipesPage() {
   const { data: session, isPending: sessionPending } = authClient.useSession();
-  const recipes = useQuery(api.recipes.list);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const recipes = useQuery(api.recipes.list, { favoritesOnly: showFavoritesOnly });
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
 
   const selectedRecipe = useMemo(() => {
@@ -46,6 +47,8 @@ function RecipesPage() {
           recipes={recipes}
           selectedRecipeId={selectedRecipe?._id ?? null}
           onSelect={setSelectedRecipeId}
+          showFavoritesOnly={showFavoritesOnly}
+          onToggleFavorites={() => setShowFavoritesOnly(!showFavoritesOnly)}
         />
 
         {/* Column 3: Recipe Content */}

@@ -8,6 +8,12 @@ const ingredientValidator = v.object({
   unit: v.optional(v.string()),
 })
 
+const stepValidator = v.object({
+  text: v.string(),
+  imageStorageId: v.optional(v.string()),
+  order: v.number(),
+})
+
 export const list = query({
   args: {
     favoritesOnly: v.optional(v.boolean()),
@@ -16,6 +22,21 @@ export const list = query({
     const user = await authComponent.getAuthUser(ctx)
     if (!user) return []
 
+    // If favoritesOnly, fetch from userFavorites table
+    if (args.favoritesOnly) {
+      const favorites = await ctx.db
+        .query('userFavorites')
+        .withIndex('by_user', (q) => q.eq('userId', user._id))
+        .collect()
+
+      const recipeIds = favorites.map((f) => f.recipeId)
+      const recipes = await Promise.all(
+        recipeIds.map((id) => ctx.db.get(id))
+      )
+      return recipes.filter((r): r is NonNullable<typeof r> => r !== null)
+    }
+
+    // Default: fetch user's recipes + public recipes
     const userRecipes = await ctx.db
       .query('recipes')
       .withIndex('by_user', (q) => q.eq('userId', user._id))
@@ -27,11 +48,6 @@ export const list = query({
       .collect()
 
     const allRecipes = [...userRecipes, ...publicRecipes].sort((a, b) => b.createdAt - a.createdAt)
-
-    if (args.favoritesOnly) {
-      return allRecipes.filter(r => r.isFavorite && r.userId === user._id)
-    }
-
     return allRecipes
   },
 })
@@ -69,6 +85,36 @@ export const search = query({
   },
 })
 
+export const listAllIngredients = query({
+  args: {},
+  handler: async (ctx) => {
+    const recipes = await ctx.db.query('recipes').collect()
+    const names = new Set<string>()
+    for (const r of recipes) {
+      for (const ing of r.ingredients) {
+        if (ing.name.trim()) names.add(ing.name.trim())
+      }
+    }
+    return Array.from(names).sort()
+  },
+})
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) throw new Error('Unauthorized')
+    return await ctx.storage.generateUploadUrl()
+  },
+})
+
+export const getImageUrl = query({
+  args: { storageId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId)
+  },
+})
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -83,6 +129,8 @@ export const create = mutation({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(stepValidator)),
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
@@ -115,6 +163,8 @@ export const update = mutation({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(stepValidator)),
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
@@ -149,6 +199,69 @@ export const toggleFavorite = mutation({
       isFavorite: !recipe.isFavorite,
       updatedAt: Date.now(),
     })
+  },
+})
+
+export const toggleUserFavorite = mutation({
+  args: {
+    recipeId: v.id('recipes'),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) throw new Error('Unauthorized')
+
+    const existing = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user_recipe', (q) => q.eq('userId', user._id).eq('recipeId', args.recipeId))
+      .unique()
+
+    if (existing) {
+      await ctx.db.delete(existing._id)
+      return { isFavorite: false }
+    } else {
+      await ctx.db.insert('userFavorites', {
+        userId: user._id,
+        recipeId: args.recipeId,
+        createdAt: Date.now(),
+      })
+    return { isFavorite: true }
+  }
+  },
+})
+
+export const getUserFavorites = query({
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) return []
+
+    const favorites = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user', (q) => q.eq('userId', user._id))
+      .order('desc')
+      .take(20)
+
+    const recipes = await Promise.all(
+      favorites.map((f) => ctx.db.get(f.recipeId))
+    )
+
+    return recipes.filter((r): r is NonNullable<typeof r> => r !== null)
+  },
+})
+
+export const isRecipeFavorite = query({
+  args: {
+    recipeId: v.id('recipes'),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx)
+    if (!user) return false
+
+    const favorite = await ctx.db
+      .query('userFavorites')
+      .withIndex('by_user_recipe', (q) => q.eq('userId', user._id).eq('recipeId', args.recipeId))
+      .unique()
+
+    return favorite !== null
   },
 })
 

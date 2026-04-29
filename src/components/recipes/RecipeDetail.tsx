@@ -15,6 +15,7 @@ import { scaleAmount } from "@/lib/recipe-utils";
 import { Button } from "@/components/ui/button";
 import { ReviewForm } from "./ReviewForm";
 import { api } from "convex/_generated/api";
+import { useNavigate } from "@tanstack/react-router";
 
 interface RecipeDetailProps {
   recipe: Doc<"recipes"> | null;
@@ -23,6 +24,7 @@ interface RecipeDetailProps {
 export function RecipeDetail({ recipe }: RecipeDetailProps) {
   const [servings, setServings] = useState(recipe?.servings || 1);
   const [isEditingReview, setIsEditingReview] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch reviews and stats from Convex
   const reviews = useQuery(
@@ -36,6 +38,12 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
   const userReview = useQuery(
     api.recipeReviews.getUserReview,
     recipe?._id ? { recipeId: recipe._id } : "skip",
+  );
+
+  // Resolve image from storageId or URL
+  const imageStorageUrl = useQuery(
+    api.recipes.getImageUrl,
+    (recipe as any)?.imageStorageId ? { storageId: (recipe as any).imageStorageId } : "skip",
   );
 
   // Mutations
@@ -106,6 +114,17 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
         <h2 className="text-4xl font-black text-foreground leading-tight mb-4">
           {recipe.name}
         </h2>
+        {recipe.userId && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mb-4 font-bold"
+            onClick={() => navigate({ to: "/recipes/$id/edit", params: { id: recipe._id } })}
+          >
+            <Edit2 className="w-4 h-4 mr-2" />
+            Edit Recipe
+          </Button>
+        )}
         <p className="text-muted-foreground leading-relaxed mb-8">
           {recipe.description ||
             "This recipe is the perfect way to enjoy a healthy and delicious meal. Using fresh ingredients and simple steps, you can create a restaurant-quality dish at home."}
@@ -159,13 +178,14 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
             How to make it
           </h3>
           <div className="space-y-6">
-            {(
-              recipe.instructions?.split("\n") || [
+            {((recipe as any).steps?.length
+              ? (recipe as any).steps.sort((a: any, b: any) => a.order - b.order).map((s: any) => s.text)
+              : recipe.instructions?.split("\n") || [
                 "Start by preparing all your fresh ingredients.",
                 "Follow the combined steps to cook the meal to perfection.",
                 "Serve immediately and enjoy your healthy creation!",
               ]
-            ).map((step, i) => (
+            ).map((step: string, i: number) => (
               <div key={i} className="flex gap-4">
                 <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 text-orange-600 font-bold">
                   {String(i + 1).padStart(2, "0")}
@@ -316,6 +336,7 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
           <div className="aspect-square rounded-3xl bg-gray-100 overflow-hidden border border-border">
             <img
               src={
+                imageStorageUrl ||
                 recipe.imageUrl ||
                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
               }

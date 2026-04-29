@@ -30,6 +30,12 @@ export default defineSchema({
     cookTimeMinutes: v.optional(v.number()),
     servings: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
+    steps: v.optional(v.array(v.object({
+      text: v.string(),
+      imageStorageId: v.optional(v.string()),
+      order: v.number(),
+    }))),
     tags: v.optional(v.array(v.string())),
     isFavorite: v.optional(v.boolean()),
     createdAt: v.number(),
@@ -116,11 +122,20 @@ export default defineSchema({
     .index('by_category', ['category'])
     .index('by_active', ['isActive']),
 
-  waterLogs: defineTable({
+waterLogs: defineTable({
     userId: v.string(),
     amount: v.number(), // ml
     loggedAt: v.number(),
   })
+  .index('by_user', ['userId'])
+  .index('by_user_date', ['userId', 'loggedAt']),
+
+  userFavorites: defineTable({
+    userId: v.string(),
+    recipeId: v.id('recipes'),
+    createdAt: v.number(),
+  })
     .index('by_user', ['userId'])
-    .index('by_user_date', ['userId', 'loggedAt']),
+    .index('by_recipe', ['recipeId'])
+    .index('by_user_recipe', ['userId', 'recipeId']),
 })
