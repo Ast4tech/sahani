@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as dailyTips from "../dailyTips.js";
 import type * as http from "../http.js";
 import type * as mealPlans from "../mealPlans.js";
+import type * as migrateRecipes from "../migrateRecipes.js";
 import type * as nutritionAnalytics from "../nutritionAnalytics.js";
 import type * as nutritionTargets from "../nutritionTargets.js";
 import type * as recipeReviews from "../recipeReviews.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   dailyTips: typeof dailyTips;
   http: typeof http;
   mealPlans: typeof mealPlans;
+  migrateRecipes: typeof migrateRecipes;
   nutritionAnalytics: typeof nutritionAnalytics;
   nutritionTargets: typeof nutritionTargets;
   recipeReviews: typeof recipeReviews;
