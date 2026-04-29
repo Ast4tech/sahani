@@ -18,6 +18,7 @@ import type * as nutritionTargets from "../nutritionTargets.js";
 import type * as recipeReviews from "../recipeReviews.js";
 import type * as recipes from "../recipes.js";
 import type * as seed from "../seed.js";
+import type * as seedBatch2 from "../seedBatch2.js";
 import type * as shoppingLists from "../shoppingLists.js";
 import type * as todos from "../todos.js";
 import type * as userProfile from "../userProfile.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   recipeReviews: typeof recipeReviews;
   recipes: typeof recipes;
   seed: typeof seed;
+  seedBatch2: typeof seedBatch2;
   shoppingLists: typeof shoppingLists;
   todos: typeof todos;
   userProfile: typeof userProfile;
