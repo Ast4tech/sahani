@@ -56,8 +56,8 @@ function EditRecipePage() {
 					carbs: recipe.carbs ?? 0,
 					fat: recipe.fat ?? 0,
 					imageUrl: recipe.imageUrl ?? "",
-					tags: recipe.tags?.join(", ") ?? "",
-					ingredients: recipe.ingredients,
+					tags: recipe.tags ?? [],
+					ingredients: recipe.ingredients.map((ing) => ({ ...ing, id: crypto.randomUUID() })),
 					instructions: recipe.instructions ?? "",
 					imageStorageId: (recipe as any).imageStorageId,
 				}}
