@@ -23,6 +23,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     trustedOrigins: [
       "http://localhost:3000",
       "http://localhost:5173",
+      "https://sahani.localhost",
       siteUrl,
     ],
     plugins: [convex({ authConfig })],
